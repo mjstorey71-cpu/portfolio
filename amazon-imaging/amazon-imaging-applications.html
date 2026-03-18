@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building Amazon's Imaging Business | Michael Storey</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    /* ─── VARIABLES (Teal / Cyan Dark) ──────────────────────────── */
+        :root {
+      --bg:         #050d0f;
+      --bg-card:    #091416;
+      --bg-card2:   #0d1a1d;
+      --primary:    #0e7490;
+      --violet:     #06b6d4;
+      --lavender:   #22d3ee;
+      --glow:       rgba(6,182,212,.18);
+      --border:     rgba(6,182,212,.2);
+      --text:       #b8b8c8;
+      --text-dim:   #8e8e9e;
+      --text-muted: #80808e;
+      --green:      #10b981;
+      --yellow:     #f59e0b;
+      --red:        #ef4444;
+      --blue:       #3b82f6;
+      --teal:       #06b6d4;
+      --serif: 'Georgia', serif;
+      --sans: system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
+
+    /* ─── RESET & BASE ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+    a { color: var(--lavender); text-decoration: none; }
+    img { max-width: 100%; }
+
+    /* ─── LAYOUT HELPERS ────────────────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; width: 100%; }
+    .section { padding: 90px 0; }
+    .section-label {
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 12px;
+      color: var(--lavender);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(26px, 3.5vw, 38px);
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+    .section-body {
+      color: var(--text-dim);
+      max-width: 700px;
+      line-height: 1.8;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .grid-2 > *, .grid-3 > * { min-width: 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+    /* ─── CARDS ─────────────────────────────────────────────────── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .card:hover {
+      border-color: rgba(6, 182, 212, 0.4);
+      box-shadow: 0 0 32px var(--glow);
+    }
+    .card-sm { padding: 24px; }
+    .card-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .card-body { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+
+    /* ─── BADGE PILL ────────────────────────────────────────────── */
+    .badge-pill {
+      background: rgba(6,182,212,.15);
+      border: 1px solid rgba(6,182,212,.3);
+      color: var(--lavender);
+      font-size: 12px; font-weight: 600;
+      padding: 4px 12px; border-radius: 99px;
+    }
+
+    /* ─── HERO ──────────────────────────────────────────────────── */
+    .hero {
+      padding: 120px 0 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(14,116,144,.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+    .hero-eyebrow span { color: var(--text-dim); font-size: 14px; }
+    .hero-title {
+      font-size: clamp(38px, 6vw, 72px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      margin-bottom: 28px;
+    }
+    .grad-text {
+      background: linear-gradient(135deg, #fff 30%, var(--lavender) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: 20px;
+      color: var(--text-dim);
+      max-width: 680px;
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 56px; }
+    .tag {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      color: var(--text-dim);
+      font-size: 12px; font-weight: 500;
+      padding: 5px 10px; border-radius: 8px;
+      white-space: nowrap;
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr 1px 1fr 1px 1fr;
+      column-gap: 28px;
+      padding: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      max-width: min(900px, 100%);
+      box-sizing: border-box;
+    }
+    .hero-stat { display: flex; flex-direction: column; gap: 4px; }
+    .hero-stat-value {
+      font-size: 40px; font-weight: 800;
+      background: linear-gradient(135deg, var(--violet), var(--green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+    .hero-stat-label { font-size: 13px; color: var(--text-dim); }
+    .hero-stat-divider { background: var(--border); }
+
+    /* ─── DIVIDER ───────────────────────────────────────────────── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* ─── CHALLENGE SECTION ─────────────────────────────────────── */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .problem-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(239,68,68,.2);
+      border-radius: 14px; padding: 28px;
+    }
+    .problem-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+    .problem-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .problem-card p { font-size: 14px; color: var(--text-dim); line-height: 1.65; }
+
+    /* ─── PILLAR SECTION ────────────────────────────────────────── */
+    .pillars-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 48px;
+    }
+    .pillar-card {
+      background: var(--bg-card);
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: transform .2s, box-shadow .2s;
+      min-width: 0;
+    }
+    .pillar-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px var(--glow); }
+    .pillar-header { padding: 28px 28px 20px; border-bottom: 1px solid var(--border); }
+    .pillar-emoji { font-size: 32px; margin-bottom: 10px; display: block; }
+    .pillar-name { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .pillar-tagline { font-size: 14px; color: var(--text-dim); font-style: italic; }
+    .pillar-body { padding: 24px 28px; }
+    .metric-row {
+      display: flex; align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+    .metric-row:last-child { border-bottom: none; }
+    .metric-name { font-size: 14px; color: var(--text-dim); flex: 1; }
+    .metric-weight {
+      font-size: 13px; font-weight: 700;
+      color: var(--lavender);
+      background: rgba(6,182,212,.12);
+      padding: 3px 9px; border-radius: 6px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* ─── METHODOLOGY SECTION ───────────────────────────────────── */
+    .formula-box {
+      background: var(--bg-card2);
+      border: 1px solid rgba(6,182,212,.3);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      margin: 40px 0;
+      position: relative; overflow: hidden;
+    }
+    .formula-box::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(6,182,212,.12), transparent 60%);
+      pointer-events: none;
+    }
+    .formula-text {
+      font-family: 'Courier New', monospace;
+      font-size: clamp(15px, 2.2vw, 20px);
+      color: var(--lavender);
+      letter-spacing: .04em;
+      margin-bottom: 16px;
+    }
+    .formula-label { font-size: 13px; color: var(--text-muted); }
+    .step-list { counter-reset: steps; list-style: none; margin-top: 32px; }
+    .step-item {
+      counter-increment: steps;
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .step-item:last-child { border-bottom: none; }
+    .step-num {
+      min-width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--primary), var(--violet));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800; color: white;
+    }
+    .step-content h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+    .step-content p { font-size: 14px; color: var(--text-dim); line-height: 1.65; }
+
+    /* ─── CHARTS ────────────────────────────────────────────────── */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .chart-card.full-width { grid-column: 1 / -1; }
+    .chart-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .chart-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+    .chart-wrap { position: relative; height: 260px; overflow: hidden; }
+    .chart-wrap-tall { position: relative; height: 320px; overflow: hidden; }
+    .gauge-wrap { position: relative; height: 220px; overflow: hidden; }
+
+    /* ─── TIMELINE ───────────────────────────────────────────────── */
+    .timeline { position: relative; margin-top: 48px; }
+    .timeline::before {
+      content: '';
+      position: absolute; left: 20px; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(to bottom, var(--primary), transparent);
+    }
+    .timeline-item { display: flex; align-items: flex-start; gap: 28px; padding: 0 0 36px 0; }
+    .tl-dot {
+      min-width: 40px; height: 40px; border-radius: 50%;
+      background: var(--bg-card);
+      border: 2px solid var(--violet);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; position: relative; z-index: 1;
+      flex-shrink: 0;
+    }
+    .tl-content { padding-top: 6px; }
+    .tl-date { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+    .tl-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .tl-body { font-size: 14px; color: var(--text-dim); line-height: 1.7; }
+
+    /* ─── IMPACT NUMBERS ────────────────────────────────────────── */
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px; margin-top: 40px;
+    }
+    .impact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 24px;
+      text-align: center;
+    }
+    .impact-num {
+      font-size: 48px; font-weight: 800; line-height: 1;
+      background: linear-gradient(135deg, var(--violet), var(--green));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .impact-label { font-size: 14px; color: var(--text-dim); }
+
+    /* ─── BLOCKQUOTE ────────────────────────────────────────────── */
+    .blockquote {
+      border-left: 3px solid var(--violet);
+      padding: 20px 28px;
+      background: rgba(6,182,212,.06);
+      border-radius: 0 10px 10px 0;
+      margin: 24px 0;
+    }
+    .blockquote p { font-size: 16px; color: var(--text); font-style: italic; line-height: 1.7; }
+    .blockquote cite { display: block; margin-top: 10px; font-size: 13px; color: var(--text-muted); font-style: normal; }
+
+    /* ─── JUMP NAV ───────────────────────────────────────────────── */
+    .jump-nav {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+      margin-top: 20px; margin-bottom: 32px;
+    }
+    .jump-label {
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--text-muted); margin-right: 4px;
+    }
+    .jump-nav a {
+      font-size: 13px; font-weight: 500;
+      color: var(--text-dim);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      padding: 5px 14px; border-radius: 99px;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .jump-nav a:hover {
+      color: var(--lavender);
+      border-color: rgba(6,182,212,.4);
+      background: rgba(6,182,212,.08);
+    }
+
+    /* ─── FOOTER ────────────────────────────────────────────────── */
+    footer {
+      padding: 60px 0 40px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted); font-size: 14px;
+      text-align: center;
+    }
+    footer p { margin-bottom: 8px; }
+
+    /* ─── UTILITIES ─────────────────────────────────────────────── */
+    .mt-6 { margin-top: 24px; }
+    .mt-8 { margin-top: 32px; }
+    .mt-12 { margin-top: 48px; }
+    .text-center { text-align: center; }
+
+    /* ─── PRODUCT PLATFORM GRID ─────────────────────────────────── */
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 48px;
+    }
+    .platform-card {
+      background: var(--bg-card);
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: transform .2s, box-shadow .2s;
+      min-width: 0;
+    }
+    .platform-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px var(--glow); }
+    .platform-header {
+      padding: 28px 28px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .platform-body { padding: 24px 28px; }
+    .platform-emoji { font-size: 32px; margin-bottom: 10px; display: block; }
+    .platform-name { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .platform-sub { font-size: 14px; color: var(--text-dim); font-style: italic; }
+    .feat-row {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+      font-size: 14px; color: var(--text-dim);
+    }
+    .feat-row:last-child { border-bottom: none; }
+    .feat-check { color: var(--green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ─── STAT CALLOUTS ─────────────────────────────────────────── */
+    .stat-callout-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 32px;
+    }
+    .stat-callout {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+    }
+    .stat-callout-val {
+      font-size: 36px; font-weight: 800;
+      background: linear-gradient(135deg, var(--violet), var(--lavender));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      line-height: 1; margin-bottom: 6px;
+    }
+    .stat-callout-label { font-size: 13px; color: var(--text-muted); }
+
+    /* ─── RESPONSIVE ────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .platform-grid, .pillars-row { grid-template-columns: 1fr 1fr; }
+      .hero-stats { column-gap: 20px; max-width: 100%; }
+      .chart-grid { grid-template-columns: 1fr 1fr; }
+      .chart-card, .pillar-card, .card { min-width: 0; }
+      .stat-callout-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 900px) {
+      .chart-grid { grid-template-columns: 1fr; }
+      .chart-card.full-width { grid-column: 1; }
+      .chart-wrap { height: 240px; }
+      .chart-wrap-tall { height: 300px; }
+      .gauge-wrap { height: 200px; }
+    }
+    @media (max-width: 768px) {
+      .platform-grid, .pillars-row,
+      .chart-grid, .grid-2, .grid-3,
+      .stat-callout-grid { grid-template-columns: 1fr; }
+      .chart-card.full-width { grid-column: 1; }
+      .hero-stats {
+        display: flex; flex-direction: column;
+        gap: 20px; padding: 24px; max-width: 100%;
+      }
+      .hero-stat-divider { width: 100%; height: 1px; }
+      .container { padding: 0 20px; }
+      .section { padding: 64px 0; }
+      .formula-box { padding: 28px 20px; }
+      .chart-wrap { height: 220px; }
+      .chart-wrap-tall { height: 280px; }
+    }
+    @media (max-width: 480px) {
+      .hero { padding: 80px 0 56px; }
+      .hero-stat-value { font-size: 30px; }
+      .hero-stats { padding: 18px; }
+      .section { padding: 48px 0; }
+      .container { padding: 0 16px; }
+      .platform-header { padding: 20px 20px 16px; }
+      .platform-body { padding: 16px 20px; }
+      .card { padding: 20px; }
+      .impact-num { font-size: 36px; }
+      .blockquote { padding: 16px 20px; }
+      .formula-box { padding: 20px 16px; }
+      .chart-wrap { height: 180px; }
+      .chart-wrap-tall { height: 240px; }
+      .gauge-wrap { height: 160px; }
+    }
+  
+    /* ─── SCREEN GALLERY ────────────────────────────────────────── */
+    
+    
+    
+    
+    
+    .screen-card img { width: 100%; display: block; }
+    
+    
+    
+    
+    
+    
+    
+
+  
+    
+    
+    /* ── screen gallery ── */
+    .screens-section { padding: 90px 0; }
+    .screen-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 32px;
+    }
+    .screen-card {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: box-shadow .2s;
+    }
+    .screen-card:hover { box-shadow: 0 8px 32px var(--glow); }
+    .screen-card img { width: 100%; display: block; }
+    .screen-caption {
+      padding: 14px 18px;
+      border-top: 1px solid var(--border);
+    }
+    .screen-caption strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #b4bdc6;
+      margin-bottom: 3px;
+    }
+    .screen-caption span {
+      font-size: 13px;
+      color: #8a9199;
+      line-height: 1.5;
+    }
+    .screen-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .screen-badge.before {
+      background: rgba(239,68,68,.15);
+      color: #ef4444;
+      border: 1px solid rgba(239,68,68,.3);
+    }
+    .screen-badge.after {
+      background: rgba(16,185,129,.12);
+      color: var(--primary);
+      border: 1px solid rgba(16,185,129,.3);
+    }
+    .screen-placeholder {
+      width: 100%;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-card);
+      color: #8a9199;
+      font-size: 13px;
+      gap: 8px;
+      padding: 40px;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* ─── SCREEN CHAPTERS ────────────────────────────────────────── */
+    .screen-chapter {
+      padding: 48px 0 20px;
+    }
+    .screen-chapter + .screen-stack,
+    .screen-chapter + .screen-stack-mobile {
+      margin-top: 16px;
+    }
+    .screen-chapter-eyebrow {
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      color: var(--violet);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .screen-chapter-title {
+      font-size: clamp(18px, 2.5vw, 24px);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .screen-chapter-body {
+      font-size: 15px;
+      color: var(--text-dim);
+      max-width: 720px;
+      line-height: 1.75;
+    }
+    .chapter-divider {
+      border: none;
+      border-top: 1px solid rgba(6, 182, 212, 0.12);
+      margin: 0;
+    }
+
+    /* ─── 3-COL MOBILE GRID ──────────────────────────────────────── */
+    .screen-stack-mobile {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .screen-stack-mobile .screen-card img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+    @media (max-width: 768px) {
+      .screen-stack-mobile { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .screen-stack-mobile { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<!-- ═══════════════════════════════════ PORTFOLIO NAV -->
+<style>
+  .pnav {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(7,7,14,0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    font-family: system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+  }
+  .pnav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 28px;
+    height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+  }
+  .pnav-brand {
+    font-size: 14px; font-weight: 700; color: #ededf8;
+    text-decoration: none; letter-spacing: -.01em; white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .pnav-brand span { color: #a78bfa; }
+  .pnav-controls {
+    display: flex; align-items: center; gap: 4px;
+  }
+  .pnav-prev, .pnav-next {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; color: #8888aa; text-decoration: none;
+    padding: 5px 10px; border-radius: 6px;
+    transition: color .18s, background .18s;
+    white-space: nowrap; max-width: 180px; overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pnav-prev:hover, .pnav-next:hover { color: #a78bfa; background: rgba(139,92,246,.08); }
+  .pnav-prev svg, .pnav-next svg { flex-shrink: 0; }
+  .pnav-sep {
+    width: 1px; height: 18px; background: rgba(255,255,255,0.1); margin: 0 2px;
+    flex-shrink: 0;
+  }
+  .pnav-menu { position: relative; }
+  .pnav-menu-btn {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 600; color: #a78bfa;
+    background: rgba(139,92,246,.1); border: 1px solid rgba(139,92,246,.25);
+    padding: 5px 12px; border-radius: 6px; cursor: pointer;
+    transition: background .18s, border-color .18s;
+    font-family: inherit; white-space: nowrap;
+  }
+  .pnav-menu-btn:hover { background: rgba(139,92,246,.18); border-color: rgba(139,92,246,.45); }
+  .pnav-menu-btn svg { transition: transform .2s; }
+  .pnav-menu-btn.open svg { transform: rotate(180deg); }
+  .pnav-dropdown {
+    display: none; position: absolute; top: calc(100% + 8px); right: 0;
+    background: #0d0d1c; border: 1px solid rgba(139,92,246,.2);
+    border-radius: 12px; box-shadow: 0 16px 48px rgba(0,0,0,.6);
+    min-width: 480px; padding: 8px;
+    z-index: 300;
+  }
+  .pnav-dropdown.open { display: block; }
+  .pnav-dropdown-header {
+    padding: 8px 10px 10px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+    color: #606080; border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 6px;
+  }
+  .pnav-dropdown-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+  }
+  .pnav-dropdown-item {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 7px 10px; border-radius: 7px; text-decoration: none;
+    transition: background .15s;
+  }
+  .pnav-dropdown-item:hover { background: rgba(139,92,246,.1); }
+  .pnav-dropdown-item.current { background: rgba(139,92,246,.12); }
+  .pnav-dropdown-item.current .pnav-dd-title { color: #a78bfa; }
+  .pnav-dd-num {
+    font-size: 10px; color: #606080; font-weight: 600;
+    min-width: 16px; text-align: right; flex-shrink: 0;
+  }
+  .pnav-dd-title { font-size: 12px; color: #ededf8; line-height: 1.3; }
+  .pnav-dd-co { font-size: 10px; color: #606080; white-space: nowrap; }
+  .pnav-footer {
+    margin-top: 80px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-family: system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+  }
+  .pnav-footer-inner {
+    max-width: 1200px; margin: 0 auto; padding: 32px 28px;
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    align-items: center; gap: 24px;
+  }
+  .pnav-footer-prev, .pnav-footer-next {
+    text-decoration: none; display: flex; flex-direction: column; gap: 4px;
+    padding: 14px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.07);
+    transition: border-color .2s, background .2s;
+  }
+  .pnav-footer-prev:hover, .pnav-footer-next:hover {
+    border-color: rgba(139,92,246,.3); background: rgba(139,92,246,.06);
+  }
+  .pnav-footer-next { text-align: right; }
+  .pnav-footer-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
+    color: #606080;
+  }
+  .pnav-footer-title {
+    font-size: 14px; font-weight: 600; color: #ededf8; line-height: 1.3;
+  }
+  .pnav-footer-index {
+    text-align: center; text-decoration: none;
+    font-size: 12px; color: #8888aa; white-space: nowrap;
+    padding: 8px 16px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.07);
+    transition: color .18s, border-color .18s;
+  }
+  .pnav-footer-index:hover { color: #a78bfa; border-color: rgba(139,92,246,.3); }
+  @media (max-width: 640px) {
+    .pnav-prev, .pnav-next { display: none; }
+    .pnav-dropdown { min-width: calc(100vw - 32px); right: -14px; }
+    .pnav-dropdown-grid { grid-template-columns: 1fr; }
+    .pnav-footer-inner { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
+    .pnav-footer-index { grid-column: 1/-1; order: -1; }
+  }
+</style>
+
+<nav class="pnav">
+  <div class="pnav-inner">
+    <a href="../index.html" class="pnav-brand">Michael <span>Storey</span></a>
+    <div class="pnav-controls">
+      <a href="../inside-amazon/inside-amazon.html" class="pnav-prev">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7.5 2.5L4 6l3.5 3.5"/></svg>
+        Inside Amazon
+      </a>
+      <div class="pnav-sep"></div>
+      <div class="pnav-menu">
+        <button class="pnav-menu-btn" id="pnavBtn">
+          All Cases
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 4l4 4 4-4"/></svg>
+        </button>
+        <div class="pnav-dropdown" id="pnavDropdown">
+          <div class="pnav-dropdown-header">17 Case Studies</div>
+          <div class="pnav-dropdown-grid">
+            <a href="../rentedge/case-study-rentedge.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">01</span>
+              <span><span class="pnav-dd-title">RentEdge</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../messaging/messaging-case-study.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">02</span>
+              <span><span class="pnav-dd-title">Unified Messaging</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../landlord-fintech/case-study-landlord-subscription.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">03</span>
+              <span><span class="pnav-dd-title">Landlord Fintech</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../design-system/case-study-design-system.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">04</span>
+              <span><span class="pnav-dd-title">Design System</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../ai-power-up/ai-powerup-rentspree.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">05</span>
+              <span><span class="pnav-dd-title">AI Orchestration</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../app-redesign/case-study-application-redesign.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">06</span>
+              <span><span class="pnav-dd-title">App Redesign</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../transforming-rentspree/rentspree-transformation.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">07</span>
+              <span><span class="pnav-dd-title">Transforming RentSpree</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../inside-amazon/inside-amazon.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">08</span>
+              <span><span class="pnav-dd-title">Inside Amazon</span><br><span class="pnav-dd-co">Amazon</span></span>
+            </a>
+            <a href="amazon-imaging-applications.html" class="pnav-dropdown-item current">
+              <span class="pnav-dd-num">09</span>
+              <span><span class="pnav-dd-title">Amazon Imaging</span><br><span class="pnav-dd-co">Amazon</span></span>
+            </a>
+            <a href="../amazon-prime/amazon-prime-iliad.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">10</span>
+              <span><span class="pnav-dd-title">Amazon Prime</span><br><span class="pnav-dd-co">Amazon</span></span>
+            </a>
+            <a href="../amazon-creative-services/amazon-creative-services-portfolio.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">11</span>
+              <span><span class="pnav-dd-title">Creative Services</span><br><span class="pnav-dd-co">Amazon</span></span>
+            </a>
+            <a href="../amazon-gift-guides/amazon-consumer-gift-guides.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">12</span>
+              <span><span class="pnav-dd-title">Gift Guides</span><br><span class="pnav-dd-co">Amazon</span></span>
+            </a>
+            <a href="../amazon-banner/amazon-banner-publishing-tool.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">13</span>
+              <span><span class="pnav-dd-title">Banner Tool</span><br><span class="pnav-dd-co">Amazon</span></span>
+            </a>
+            <a href="../hackathon/case-study-buildspree-hackathon.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">14</span>
+              <span><span class="pnav-dd-title">HackSpree 2025</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../ai-uxr/ai-uxr-assistant-case-study.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">15</span>
+              <span><span class="pnav-dd-title">AI UXR Assistant</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../voc/voice-of-the-customer-program.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">16</span>
+              <span><span class="pnav-dd-title">Customer Obsession</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../pqs/pqs-case-study.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">17</span>
+              <span><span class="pnav-dd-title">Product Quality Score</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="pnav-sep"></div>
+      <a href="../amazon-prime/amazon-prime-iliad.html" class="pnav-next">
+        Amazon Prime
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4.5 2.5L8 6l-3.5 3.5"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
+<script>
+  (function() {
+    var btn = document.getElementById('pnavBtn');
+    var dd  = document.getElementById('pnavDropdown');
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var open = dd.classList.toggle('open');
+      btn.classList.toggle('open', open);
+    });
+    document.addEventListener('click', function() {
+      dd.classList.remove('open');
+      btn.classList.remove('open');
+    });
+  })();
+</script>
+
+
+<!-- ─── HERO ─────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">
+      <span class="badge-pill">Platform Strategy &amp; Product Operations</span>
+      <span>Amazon &middot; 2018&ndash;2020</span>
+    </div>
+
+    <div class="jump-nav">
+      <span class="jump-label">Jump to</span>
+      <a href="#challenge">Challenge</a>
+      <a href="#platform">Platform</a>
+      <a href="#approach">Approach</a>
+      <a href="#data">Data</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#impact">Impact</a>
+    </div>
+
+    <h1 class="hero-title">
+      <span class="grad-text">Building Amazon's<br>Imaging Business</span>
+    </h1>
+    <p class="hero-sub">
+      Amazon's seller imaging tools had gone without meaningful investment for over a decade.
+      As the PM accountable for the full imaging product surface, the task was to navigate
+      12 stakeholder organizations, establish ownership of a fragmented ecosystem, and ship
+      a suite of tools that would take image creation from a seller pain point to a scalable,
+      compliant, high-volume platform.
+    </p>
+
+    <div class="hero-tags">
+      <span class="tag">Platform Strategy</span>
+      <span class="tag">Mobile Product</span>
+      <span class="tag">Technical PM</span>
+      <span class="tag">Stakeholder Management</span>
+      <span class="tag">UX Research</span>
+      <span class="tag">Cross-functional Leadership</span>
+      <span class="tag">E-commerce</span>
+      <span class="tag">React Native</span>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-value">200M</span>
+        <span class="hero-stat-label">Images processed weekly</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">-5 days</span>
+        <span class="hero-stat-label">Faster defect resolution</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">4.5/5</span>
+        <span class="hero-stat-label">CSAT stars</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">15M</span>
+        <span class="hero-stat-label">Mobile uploads, year one</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="screens-product" class="screens-section">
+  <div class="container">
+    <p class="section-eyebrow">Product Screens</p>
+    <h2 class="section-title">The Work</h2>
+    <p class="section-subtitle">Three initiatives, told in order: introducing Imaging Services into the legacy Seller Central experience, redesigning that experience end-to-end, and building a mobile imaging capability for the first time.</p>
+
+    <!-- ── CHAPTER 1: IMAGING SERVICES ── -->
+    <div class="screen-chapter">
+      <p class="screen-chapter-eyebrow">Initiative 1</p>
+      <h3 class="screen-chapter-title">Introducing Imaging Services into Seller Central</h3>
+      <p class="screen-chapter-body">
+        The Seller Central team owned the Manage My Images surface but had no bandwidth to invest in it.
+        After a series of cross-team negotiations, the Imaging team secured ownership of the seller-facing
+        UI intake — building the ordering flow directly into the existing interface as a modal, without
+        requiring changes to the underlying Seller Central API. Sellers could now discover, configure,
+        and order professional imaging services in one place for the first time.
+      </p>
+    </div>
+    <div class="screen-stack" id="screens-imaging-services">
+      <div class="screen-card">
+        <img src="imaging-services/imaging-1.png" alt="Navigating the space — stakeholder map" loading="lazy" />
+        <div class="screen-caption">
+          <strong>Navigating the space</strong>
+          <span>Mapping the organizational landscape across Imaging Studios, Imaging Tech, Legal &amp; PR, Billing &amp; Finance, Seller Tools, and Selling Partners — a prerequisite before any product work could begin.</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="imaging-services/services-promo-material-1.jpg" alt="Amazon Imaging Services — what it is and shot goals" loading="lazy" />
+        <div class="screen-caption">
+          <strong>Defining the service offering</strong>
+          <span>Internal documentation explaining what Amazon Imaging is, how it works, and the shot goals available for sellers to order — covering white background images, environment sets, and lifestyle photography.</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="imaging-services/services-promo-material-2.jpg" alt="Image standards — on-white, lighting and environment set examples" loading="lazy" />
+        <div class="screen-caption">
+          <strong>Image standards and service examples</strong>
+          <span>Style guides and lighting standards covering on-white product photography, talent shoots, and environment set categories (Office, Kitchen, Bedroom, Gym and more) — giving sellers clear expectations of what they'd receive.</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="Imaging%20Services/slide_057_img_059_web.jpg" alt="Imaging Services ordering modal — first ingress point in Seller Central" loading="lazy" />
+        <div class="screen-caption">
+          <strong>Imaging Services ordering modal — first ingress point</strong>
+          <span>The initial ordering flow embedded directly into the legacy Manage My Images experience in Seller Central. Sellers could select image types, set quantities, add product notes, and place an order without leaving the platform.</span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="chapter-divider" style="margin: 48px 0 0;" />
+
+    <!-- ── CHAPTER 2: SELLER CENTRAL REDESIGN ── -->
+    <div class="screen-chapter">
+      <p class="screen-chapter-eyebrow">Initiative 2</p>
+      <h3 class="screen-chapter-title">Redesigning the Seller Central Image Management Experience</h3>
+      <p class="screen-chapter-body">
+        Post-launch feedback made clear that the Imaging Services entry point was buried inside a
+        legacy interface sellers found confusing and hard to navigate. The surrounding experience was
+        owned by multiple teams with no shared UX standards, making the overall journey feel fractured.
+        This became the mandate for a ground-up redesign of the image management experience in
+        Seller Central — giving sellers a coherent, modern surface for uploading, managing, reviewing,
+        and fixing their product imagery at scale.
+      </p>
+    </div>
+    <div class="screen-stack" id="screens-seller-central">
+
+      <div class="screen-card">
+        <div style="position:relative;">
+          <img src="seller-central-imaging/imaging-before-redesign.png" alt="Before redesign — fractured image management experience in Seller Central" loading="lazy" />
+          <span class="screen-badge before">BEFORE</span>
+        </div>
+        <div class="screen-caption">
+          <strong>A fragmented starting point</strong>
+          <span>The legacy Manage My Images experience in Seller Central — a scattered, desktop-only layout with no unified view, no batch actions, and no clear path to imaging services. Sellers had to navigate multiple disconnected pages to accomplish basic tasks.</span>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div style="position:relative;">
+          <img src="seller-central-imaging/imaging-application-1.jpg" alt="Batch uploads and issue notifications in the redesigned image management dashboard" loading="lazy" />
+          <span class="screen-badge after">AFTER</span>
+        </div>
+        <div class="screen-caption">
+          <strong>Batch uploads and proactive issue detection</strong>
+          <span>The redesigned dashboard introduced bulk image uploads with real-time processing feedback, alongside an inline notification system that surfaced compliance issues and image quality problems without sellers having to hunt for them.</span>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div style="position:relative;">
+          <img src="seller-central-imaging/imaging-application-2.jpg" alt="Your Image Library — unified list view of all product images" loading="lazy" />
+          <span class="screen-badge after">AFTER</span>
+        </div>
+        <div class="screen-caption">
+          <strong>Your Image Library — one place for everything</strong>
+          <span>A unified, searchable library view giving sellers a complete picture of all their product images across their catalog. Sortable by ASIN, status, and last-updated date, with inline status indicators for compliance and live images.</span>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div style="position:relative;">
+          <img src="seller-central-imaging/imaging-application-3.jpg" alt="Image Details modal — deep-dive view per image with compliance metadata" loading="lazy" />
+          <span class="screen-badge after">AFTER</span>
+        </div>
+        <div class="screen-caption">
+          <strong>Image Details — full context in a single panel</strong>
+          <span>An expandable details modal surfacing all metadata for a selected image: compliance status, image type, dimensions, upload history, and direct actions to replace or reorder. Sellers no longer had to leave the page to understand the state of an image.</span>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div style="position:relative;">
+          <img src="seller-central-imaging/imaging-application-4.jpg" alt="Image Testing — A/B test set-up for product image variants" loading="lazy" />
+          <span class="screen-badge after">AFTER</span>
+        </div>
+        <div class="screen-caption">
+          <strong>Image Testing — A/B experimentation built in</strong>
+          <span>A self-serve A/B testing interface allowing sellers to pit two image variants against each other on a live listing. Sellers could define the test window, split traffic, and track click-through performance — a capability that previously required a vendor engagement.</span>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div style="position:relative;">
+          <img src="seller-central-imaging/imaging-application-5.jpg" alt="Imaging Services tab integrated into the unified image management application" loading="lazy" />
+          <span class="screen-badge after">AFTER</span>
+        </div>
+        <div class="screen-caption">
+          <strong>Imaging Services — integrated, not bolted on</strong>
+          <span>Rather than a separate modal buried in legacy flows, Imaging Services became a first-class tab inside the redesigned app. Sellers could order professional photography, track jobs in progress, and receive completed assets — all in the same experience where they managed their images.</span>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <div style="position:relative;">
+          <img src="Seller%20Central%20Imaging%20application/slide_062_img_062_web.jpg" alt="Image settings and self-service editing controls in the redesigned Manage Images experience" loading="lazy" />
+          <span class="screen-badge after">AFTER</span>
+        </div>
+        <div class="screen-caption">
+          <strong>Self-service image settings and editing controls</strong>
+          <span>An updated Manage Images view with an inline settings panel, giving sellers granular control over image assignments, ordering, and display rules per ASIN — previously requiring a support ticket or manual intervention from the Seller Tools team.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <hr class="chapter-divider" style="margin: 48px 0 0;" />
+
+    <!-- ── CHAPTER 3: MOBILE APP ── -->
+    <div class="screen-chapter">
+      <p class="screen-chapter-eyebrow">Initiative 3</p>
+      <h3 class="screen-chapter-title">Mobile Imaging — Built Inside the Amazon Seller App</h3>
+      <p class="screen-chapter-body">
+        A parallel initiative developed in close partnership with the Amazon Seller App team in
+        Santa Cruz. While the desktop redesign served professional sellers on Seller Central,
+        millions of sellers globally were running their businesses entirely from mobile devices.
+        The React Native imaging module gave them the ability to capture, auto-enhance, check
+        compliance, and upload product images directly from their phone — a capability that had
+        never existed before. Fifteen million uploads in year one validated both the demand and
+        the quality of execution.
+      </p>
+    </div>
+    <div class="screen-stack-mobile" id="screens-mobile-app">
+
+      <div class="screen-card">
+        <img src="mobile-app/mobile-app-2.png" alt="Amazon Seller app — Product Photo Studio entry point in navigation menu" loading="lazy" />
+        <div class="screen-caption">
+          <strong>Product Photo Studio entry point</strong>
+          <span>The Product Photo Studio was surfaced as a dedicated entry in the Amazon Seller app navigation, giving sellers a clear, discoverable path to imaging tools from the mobile experience they already used daily.</span>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <img src="mobile-app/mobile-app-3.png" alt="Photo source selection — Take Photo or choose from Photo Library" loading="lazy" />
+        <div class="screen-caption">
+          <strong>Photo source — camera or library</strong>
+          <span>A simple action sheet letting sellers choose between taking a new photo on the spot or selecting an existing image from their device's photo library — keeping the entry point frictionless for both capture and upload workflows.</span>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <img src="mobile-app/mobile-app-4.png" alt="Live camera view with composition grid for product photography" loading="lazy" />
+        <div class="screen-caption">
+          <strong>In-app camera with composition guidance</strong>
+          <span>A guided camera view with a composition grid to help sellers frame product shots correctly before capturing. Designed to reduce the number of retakes and improve first-attempt compliance rates for white-background requirements.</span>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <img src="mobile-app/mobile-app-5.png" alt="Edit your photo — Exposure, Background removal, and Crop controls" loading="lazy" />
+        <div class="screen-caption">
+          <strong>Photo editing — exposure, background, crop</strong>
+          <span>An inline editing suite covering the three most common post-capture fixes: exposure adjustment, AI-assisted background removal for white-background compliance, and manual crop. All editable before submission, without leaving the app.</span>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <img src="mobile-app/mobile-app-6.png" alt="Crop tool with auto-crop for correct product image framing" loading="lazy" />
+        <div class="screen-caption">
+          <strong>Auto-crop for image standards compliance</strong>
+          <span>An intelligent crop tool with an auto-crop option that automatically applied Amazon's framing guidelines — product centred, correct padding, correct aspect ratio. Sellers could accept the suggestion or adjust manually with visual guides showing compliance boundaries.</span>
+        </div>
+      </div>
+
+      <div class="screen-card">
+        <img src="mobile-app/mobile-app-7.png" alt="Review your photo — all compliance checks passing before submission" loading="lazy" />
+        <div class="screen-caption">
+          <strong>Compliance review before submission</strong>
+          <span>A pre-submission review screen running automated compliance checks against Amazon's image standards — background, resolution, framing, and file type. All checks shown as passing, giving sellers confidence before the image goes live on their listing.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<hr class="divider" />
+
+<!-- ─── CHALLENGE ─────────────────────────────────────────────────── -->
+<section class="section" id="challenge">
+  <div class="container">
+    <p class="section-label">The Challenge</p>
+    <h2 class="section-title">A Decade Without Investment</h2>
+    <p class="section-body">
+      Amazon's imaging tools had been largely unchanged for more than ten years.
+      Sellers struggled with outdated workflows, unclear compliance requirements, and
+      no unified path to create, fix, or manage product images at scale. While the Seller
+      Central team nominally owned the space, it had no place on their roadmap and no
+      dedicated resource allocation. Through negotiation across engineering and product
+      leadership, the Imaging team secured responsibility for the seller-facing UI intake —
+      the front-end experience through which sellers access imaging services — while Seller
+      Central retained ownership of the underlying API layer. This allowed the team to build
+      and iterate on the product experience independently, without requiring a wholesale
+      re-architecture of backend systems.
+    </p>
+
+    <div class="problem-grid">
+      <div class="problem-card">
+        <span class="problem-icon">🕰️</span>
+        <h3>No Investment for 10+ Years</h3>
+        <p>The seller-facing imaging toolset had seen no meaningful product investment in over a decade. Sellers relied on workarounds and external tools that were not built to Amazon's compliance standards.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">🏛️</span>
+        <h3>12 Stakeholder Organizations</h3>
+        <p>The imaging ecosystem spanned 12 distinct internal teams with overlapping mandates, competing priorities, and no shared roadmap. Coordinating alignment was a prerequisite to shipping anything at scale.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">⚠️</span>
+        <h3>Compliance Gaps at Scale</h3>
+        <p>Sellers frequently submitted images that failed to meet Amazon's strict style and content guidelines. There were no in-product tools to help sellers self-diagnose or fix image defects before submission.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">📱</span>
+        <h3>Zero Mobile Capability</h3>
+        <p>With millions of sellers operating from mobile devices globally, the absence of a mobile imaging tool created a major gap in accessibility. Sellers had no way to capture, edit, or upload images on the go.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider" />
+
+<!-- ─── PLATFORM ───────────────────────────────────────────────────── -->
+<section class="section" id="platform">
+  <div class="container">
+    <p class="section-label">The Platform</p>
+    <h2 class="section-title">Three Surfaces, One Imaging Ecosystem</h2>
+    <p class="section-body">
+      Rather than treating each channel as a separate product problem, the approach was
+      to build a coherent imaging platform with shared services underneath and purpose-built
+      experiences on top. Three surfaces were prioritized based on seller need, technical
+      feasibility, and organizational readiness.
+    </p>
+
+    <div class="platform-grid">
+      <div class="platform-card">
+        <div class="platform-header" style="border-left: 3px solid var(--violet);">
+          <span class="platform-emoji">📱</span>
+          <div class="platform-name">Mobile Imaging</div>
+          <div class="platform-sub">Built within the Amazon Seller App using React Native</div>
+        </div>
+        <div class="platform-body">
+          <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 16px; line-height: 1.6;">
+            The first mobile-native imaging experience for Amazon sellers, embedded directly
+            into the existing Seller App. Sellers could capture, crop, enhance, and submit
+            compliant product images from their phone.
+          </p>
+          <div class="feat-row">
+            <span class="feat-check">✓</span>
+            <span>In-app camera with compliance guidance</span>
+          </div>
+          <div class="feat-row">
+            <span class="feat-check">✓</span>
+            <span>Real-time image quality feedback</span>
+          </div>
+          <div class="feat-row">
+            <span class="feat-check">✓</span>
+            <span>Direct upload to product listings</span>
+          </div>
+          <div class="feat-row">
+            <span class="feat-check">✓</span>
+            <span>15M uploads in the first year</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="platform-card">
+        <div class="platform-header" style="border-left: 3px solid var(--lavender);">
+          <span class="platform-emoji">🖥️</span>
+          <div class="platform-name">Desktop Redesign</div>
+          <div class="platform-sub">Seller Central and Vendor Central imaging overhaul</div>
+        </div>
+        <div class="platform-body">
+          <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 16px; line-height: 1.6;">
+            A ground-up redesign of the desktop imaging workflows for both Seller Central
+            and Vendor Central. This replaced a decade-old interface with a unified,
+            standards-compliant experience for professional sellers and brand vendors.
+          </p>
+          <div class="feat-row">
+            <span class="feat-check">✓</span>
+            <span>Unified image management dashboard</span>
+          </div>
+          <div class="feat-row">
+            <span class="feat-check">✓</span>
+            <span>Bulk image upload and review tools</span>
+          </div>
+          <div class="feat-row">
+            <span class="feat-check">✓</span>
+            <span>Defect detection and guided correction</span>
+          </div>
+          <div class="feat-row">
+            <span class="feat-check">✓</span>
+            <span>Consistent UX across Seller and Vendor portals</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="platform-card">
+        <div class="platform-header" style="border-left: 3px solid var(--green);">
+          <span class="platform-emoji">⚙️</span>
+          <div class="platform-name">Services Integration</div>
+          <div class="platform-sub">Shared imaging services layer powering all surfaces</div>
+        </div>
+        <div class="platform-body">
+          <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 16px; line-height: 1.6;">
+            Underneath both the mobile and desktop experiences, a shared imaging services
+            layer was established. This enabled consistent compliance validation, image
+            processing, and defect resolution logic across all entry points.
+          </p>
+          <div class="feat-row">
+            <span class="feat-check">✓</span>
+            <span>Centralized image compliance validation</span>
+          </div>
+          <div class="feat-row">
+            <span class="feat-check">✓</span>
+            <span>Automated defect classification and routing</span>
+          </div>
+          <div class="feat-row">
+            <span class="feat-check">✓</span>
+            <span>Cross-team API contracts across 12 orgs</span>
+          </div>
+          <div class="feat-row">
+            <span class="feat-check">✓</span>
+            <span>Scalable infrastructure to 200M images/week</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider" />
+
+<!-- ─── APPROACH ───────────────────────────────────────────────────── -->
+<hr class="divider" />
+<section class="section" id="approach">
+  <div class="container">
+    <p class="section-label">The Approach</p>
+    <h2 class="section-title">Navigating Complexity to Create Clarity</h2>
+    <p class="section-body">
+      With 12 stakeholder organizations and no prior unified ownership, the first challenge
+      was establishing shared understanding before any product decisions could be made. The
+      approach prioritized alignment, then architecture, then delivery.
+    </p>
+
+    <div class="formula-box">
+      <div class="formula-text">Discovery &rarr; Alignment &rarr; Shared Roadmap &rarr; Parallel Delivery &rarr; Integrated Platform</div>
+      <div class="formula-label">A five-phase model for building shared ownership across a fragmented stakeholder landscape</div>
+    </div>
+
+    <ul class="step-list">
+      <li class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Cross-Organizational Discovery</h4>
+          <p>Ran structured discovery interviews across all 12 stakeholder organizations to map current-state capabilities, pain points, and opportunity areas. Documented overlapping mandates and surface dependencies to identify where coordination was most critical.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Seller Research and Needs Mapping</h4>
+          <p>Conducted qualitative research with sellers ranging from individual small businesses to large brand vendors. Mapped the full imaging journey from product photography through compliance review to understand where friction was highest and stakes were largest.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Unified Product Architecture</h4>
+          <p>Defined a platform architecture that separated shared imaging services from surface-specific experiences. This gave each stakeholder team a clear integration point while enabling consistent compliance logic across all seller-facing surfaces.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Parallel Mobile and Desktop Delivery</h4>
+          <p>Coordinated parallel development tracks for the mobile app (React Native, embedded in the Seller App) and the desktop redesign (Seller Central and Vendor Central). Maintained a single shared services layer beneath both tracks to ensure consistency.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h4>Iterative Validation and Feedback Loops</h4>
+          <p>Established seller feedback mechanisms post-launch to track CSAT, image defect rates, and upload volumes. Used this data to drive prioritization of subsequent improvements and prove the case for continued investment in the platform.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+<hr class="divider" />
+
+<!-- ─── DATA ───────────────────────────────────────────────────────── -->
+<hr class="divider" />
+<section class="section" id="data">
+  <div class="container">
+    <p class="section-label">The Data</p>
+    <h2 class="section-title">From Fragmented to High-Scale</h2>
+    <p class="section-body">
+      The numbers tell the story of a platform that went from stagnant to a foundational
+      piece of Amazon's seller infrastructure. Image volume grew more than 14x, defect
+      resolution times dropped significantly, and mobile adoption exceeded projections
+      in year one.
+    </p>
+
+    <div class="chart-grid">
+
+      <div class="chart-card full-width">
+        <div class="chart-title">Weekly Image Volume Growth</div>
+        <div class="chart-subtitle">Images processed per week (millions) across the platform lifecycle</div>
+        <div class="chart-wrap-tall">
+          <canvas id="chartVolume"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Image Defect Resolution Time</div>
+        <div class="chart-subtitle">Average days for sellers to resolve image defects (before vs. after)</div>
+        <div class="chart-wrap">
+          <canvas id="chartDefect"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Seller CSAT Score</div>
+        <div class="chart-subtitle">Post-launch satisfaction rating across imaging workflows</div>
+        <div class="gauge-wrap">
+          <canvas id="chartCsat"></canvas>
+        </div>
+        <div style="text-align: center; margin-top: 12px;">
+          <span style="font-size: 32px; font-weight: 800; background: linear-gradient(135deg, var(--violet), var(--green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">4.5 / 5</span>
+          <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">CSAT Stars</div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Mobile Upload Growth</div>
+        <div class="chart-subtitle">Cumulative mobile uploads via the Amazon Seller App (millions)</div>
+        <div class="chart-wrap">
+          <canvas id="chartMobile"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Platform Reach by Surface</div>
+        <div class="chart-subtitle">Distribution of image submissions across mobile, Seller Central, and Vendor Central</div>
+        <div class="chart-wrap">
+          <canvas id="chartSurface"></canvas>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<hr class="divider" />
+
+<!-- ─── TIMELINE ─────────────────────────────────────────────────────── -->
+<section class="section" id="timeline">
+  <div class="container">
+    <p class="section-label">Program Timeline</p>
+    <h2 class="section-title">From Discovery to Platform Scale</h2>
+    <p class="section-body">
+      The imaging platform was built in phases over two years, moving from organizational
+      discovery through parallel product delivery to full platform integration and scale.
+    </p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="tl-dot">🔍</div>
+        <div class="tl-content">
+          <div class="tl-date">Early 2018</div>
+          <div class="tl-title">Established PM Ownership of Imaging</div>
+          <div class="tl-body">Took on accountability for the full Amazon seller imaging product surface. Began cross-organizational mapping across all 12 internal stakeholder teams to understand current-state capabilities and gaps.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">🗺️</div>
+        <div class="tl-content">
+          <div class="tl-date">Mid 2018</div>
+          <div class="tl-title">Seller Research and Architecture Definition</div>
+          <div class="tl-body">Completed qualitative research with sellers and defined the unified platform architecture. Established shared services contracts across stakeholder teams and aligned on a sequenced delivery roadmap.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">📱</div>
+        <div class="tl-content">
+          <div class="tl-date">Late 2018</div>
+          <div class="tl-title">Mobile Imaging Launched in Amazon Seller App</div>
+          <div class="tl-body">Shipped the first mobile imaging capability within the Amazon Seller App using React Native. Sellers could now capture, review, and submit compliant product images directly from their devices for the first time.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">🖥️</div>
+        <div class="tl-content">
+          <div class="tl-date">Early 2019</div>
+          <div class="tl-title">Seller Central Desktop Redesign Shipped</div>
+          <div class="tl-body">Delivered the redesigned imaging experience within Seller Central, replacing decade-old workflows with a unified, compliance-aware interface. Defect detection and guided correction tools were included in the initial release.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">🏢</div>
+        <div class="tl-content">
+          <div class="tl-date">Mid 2019</div>
+          <div class="tl-title">Vendor Central Imaging Overhaul Completed</div>
+          <div class="tl-body">Extended the new imaging experience to Vendor Central, bringing brand vendors onto the shared platform. Both Seller and Vendor Central now shared a consistent underlying services layer for compliance validation and defect management.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">🚀</div>
+        <div class="tl-content">
+          <div class="tl-date">Late 2019 / 2020</div>
+          <div class="tl-title">Platform Scale Achieved: 200M Images per Week</div>
+          <div class="tl-body">The imaging platform reached 200M images processed per week, up from approximately 14M before the program began. Mobile uploads crossed 15M in the platform's first full year. CSAT settled at 4.5 out of 5 stars across all seller segments.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider" />
+
+<!-- ─── IMPACT ────────────────────────────────────────────────────────── -->
+<section class="section" id="impact">
+  <div class="container">
+    <p class="section-label">The Impact</p>
+    <h2 class="section-title">A Platform Built to Last</h2>
+    <p class="section-body">
+      In two years, Amazon's seller imaging capabilities went from an overlooked, outdated
+      toolset to a high-throughput platform handling hundreds of millions of images per week.
+      Sellers got the tools they needed to create and maintain compliant product imagery at
+      any scale, from any device.
+    </p>
+
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="impact-num">200M</div>
+        <div class="impact-label">Images processed weekly at peak scale</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">14x</div>
+        <div class="impact-label">Growth in weekly image volume over program lifetime</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">-5 days</div>
+        <div class="impact-label">Faster image defect resolution for sellers</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">4.5/5</div>
+        <div class="impact-label">CSAT stars across all seller segments</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">15M</div>
+        <div class="impact-label">Mobile uploads in the first year after launch</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">3</div>
+        <div class="impact-label">Product surfaces unified under a single platform</div>
+      </div>
+    </div>
+
+    <div class="grid-2 mt-12">
+      <div class="card card-sm">
+        <div class="card-title">Organizational Alignment at Scale</div>
+        <div class="card-body">
+          Establishing clear product ownership across 12 stakeholder organizations was
+          as significant as any individual product launch. A shared roadmap and API contracts
+          created the foundation for sustainable investment in seller imaging for years
+          beyond the original program.
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div class="card-title">Mobile-First Accessibility for Global Sellers</div>
+        <div class="card-body">
+          The mobile imaging launch opened Amazon's seller tools to a new category of
+          operators who relied on smartphones as their primary business device. Fifteen million
+          uploads in year one validated both the demand and the quality of the solution.
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div class="card-title">Compliance-by-Design</div>
+        <div class="card-body">
+          By embedding compliance guidance directly into the imaging workflow rather than
+          treating it as a post-submission check, image defect rates dropped and seller
+          confidence in the submission process increased. Defect resolution time fell by
+          five days on average.
+        </div>
+      </div>
+      <div class="card card-sm">
+        <div class="card-title">Scalable Infrastructure for Future Growth</div>
+        <div class="card-body">
+          The shared services layer built to support the initial three surfaces was
+          architected to scale well beyond the program's original scope. At 200M images
+          per week, the platform had headroom to support continued seller growth without
+          requiring significant rearchitecture.
+        </div>
+      </div>
+    </div>
+
+    <div class="blockquote mt-8">
+      <p>"Sellers had been asking for better imaging tools for years. What we built wasn't just a product update, it was the first time Amazon treated imaging as a real platform investment rather than an afterthought."</p>
+      <cite>Seller feedback captured during post-launch research</cite>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ────────────────────────────────────────────────────────── -->
+<script>
+  // ─── WEEKLY IMAGE VOLUME ───────────────────────────────────────
+  new Chart(document.getElementById('chartVolume'), {
+    type: 'line',
+    data: {
+      labels: ['Q1 2018', 'Q2 2018', 'Q3 2018', 'Q4 2018', 'Q1 2019', 'Q2 2019', 'Q3 2019', 'Q4 2019', 'Q1 2020'],
+      datasets: [{
+        label: 'Images/week (M)',
+        data: [14, 18, 35, 55, 80, 115, 145, 175, 200],
+        borderColor: 'rgba(6,182,212,1)',
+        backgroundColor: 'rgba(6,182,212,0.12)',
+        tension: 0.4, fill: true, pointRadius: 5,
+        pointBackgroundColor: 'rgba(6,182,212,1)',
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: ctx => ctx.parsed.y + 'M images/week' }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { color: '#7aabb5', callback: v => v + 'M' },
+          grid: { color: 'rgba(255,255,255,.06)' }
+        },
+        x: { ticks: { color: '#7aabb5' }, grid: { display: false } }
+      }
+    }
+  });
+
+  // ─── DEFECT RESOLUTION TIME ────────────────────────────────────
+  new Chart(document.getElementById('chartDefect'), {
+    type: 'bar',
+    data: {
+      labels: ['Before', 'After'],
+      datasets: [{
+        label: 'Days to resolve',
+        data: [12, 7],
+        backgroundColor: ['rgba(239,68,68,.7)', 'rgba(16,185,129,.7)'],
+        borderColor: ['rgba(239,68,68,1)', 'rgba(16,185,129,1)'],
+        borderWidth: 1, borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          beginAtZero: true, max: 15,
+          ticks: { color: '#7aabb5', callback: v => v + ' days' },
+          grid: { color: 'rgba(255,255,255,.06)' }
+        },
+        x: { ticks: { color: '#7aabb5' }, grid: { display: false } }
+      }
+    }
+  });
+
+  // ─── CSAT GAUGE ────────────────────────────────────────────────
+  new Chart(document.getElementById('chartCsat'), {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [90, 10],
+        backgroundColor: ['rgba(6,182,212,.9)', 'rgba(255,255,255,.06)'],
+        borderWidth: 0, cutout: '76%',
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } }
+    }
+  });
+
+  // ─── MOBILE UPLOAD GROWTH ──────────────────────────────────────
+  new Chart(document.getElementById('chartMobile'), {
+    type: 'bar',
+    data: {
+      labels: ['Q4 2018', 'Q1 2019', 'Q2 2019', 'Q3 2019', 'Q4 2019'],
+      datasets: [{
+        label: 'Uploads (M)',
+        data: [0.8, 2.5, 5.0, 9.5, 15],
+        backgroundColor: 'rgba(6,182,212,.7)',
+        borderColor: 'rgba(6,182,212,1)',
+        borderWidth: 1, borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { color: '#7aabb5', callback: v => v + 'M' },
+          grid: { color: 'rgba(255,255,255,.06)' }
+        },
+        x: { ticks: { color: '#7aabb5' }, grid: { display: false } }
+      }
+    }
+  });
+
+  // ─── PLATFORM SURFACE DISTRIBUTION ────────────────────────────
+  new Chart(document.getElementById('chartSurface'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Seller Central Desktop', 'Mobile App', 'Vendor Central Desktop'],
+      datasets: [{
+        data: [52, 31, 17],
+        backgroundColor: [
+          'rgba(6,182,212,.8)',
+          'rgba(34,211,238,.8)',
+          'rgba(16,185,129,.8)',
+        ],
+        borderColor: [
+          'rgba(6,182,212,1)',
+          'rgba(34,211,238,1)',
+          'rgba(16,185,129,1)',
+        ],
+        borderWidth: 1, cutout: '55%',
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: { color: '#7aabb5', padding: 16, font: { size: 12 } }
+        }
+      }
+    }
+  });
+</script>
+<!-- ═══════════════════════════════════ PORTFOLIO FOOTER NAV -->
+<div class="pnav-footer">
+  <div class="pnav-footer-inner">
+    <a href="../inside-amazon/inside-amazon.html" class="pnav-footer-prev">
+      <span class="pnav-footer-label">&#8592; Previous</span>
+      <span class="pnav-footer-title">Inside Amazon — Intranet Redesign</span>
+    </a>
+    <a href="../index.html" class="pnav-footer-index">All Work</a>
+    <a href="../amazon-prime/amazon-prime-iliad.html" class="pnav-footer-next">
+      <span class="pnav-footer-label">Next &#8594;</span>
+      <span class="pnav-footer-title">Amazon Prime — Cancellation Flow Redesign</span>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>
