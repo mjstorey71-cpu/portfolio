@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Case Studies — Michael Storey</title>
+  <style>
+    /* ─── VARIABLES ──────────────────────────────────────────────────── */
+    :root {
+      --bg:          #07070e;
+      --bg-card:     #0d0d1c;
+      --bg-card2:    #111125;
+      --bg-nav:      rgba(7,7,14,0.88);
+      --primary:     #7c3aed;
+      --violet:      #8b5cf6;
+      --lavender:    #a78bfa;
+      --glow:        rgba(139,92,246,0.15);
+      --border:      rgba(139,92,246,0.18);
+      --border-dim:  rgba(255,255,255,0.07);
+      --text:        #ededf8;
+      --text-dim:    #8888aa;
+      --text-muted:  #606080;
+      --green:       #10b981;
+      --amber:       #f59e0b;
+      --teal:        #06b6d4;
+      --blue:        #3b82f6;
+      --sans: system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    a { color: var(--lavender); text-decoration: none; }
+
+    /* ─── NAV ─────────────────────────────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--bg-nav);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 32px;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand {
+      font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -.01em;
+    }
+    .nav-brand span { color: var(--lavender); }
+    .nav-back {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--text-dim);
+      border: 1px solid var(--border-dim);
+      padding: 6px 14px; border-radius: 99px;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .nav-back:hover { color: var(--lavender); border-color: var(--border); background: rgba(139,92,246,.06); }
+    .nav-back svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* ─── HERO ────────────────────────────────────────────────────────── */
+    .hero {
+      padding: 80px 32px 56px;
+      max-width: 1200px; margin: 0 auto;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse 70% 50% at 50% -5%, rgba(124,58,237,.2) 0%, transparent 65%);
+      pointer-events: none; z-index: 0;
+    }
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .12em;
+      color: var(--lavender); margin-bottom: 20px;
+    }
+    .hero-eyebrow::before {
+      content: ''; width: 20px; height: 1px; background: var(--lavender); display: block;
+    }
+    .hero h1 {
+      font-size: clamp(38px, 5.5vw, 64px);
+      font-weight: 800; line-height: 1.08; letter-spacing: -.03em;
+      margin-bottom: 20px;
+    }
+    .grad { background: linear-gradient(135deg, #fff 30%, var(--lavender) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-sub {
+      font-size: 17px; color: var(--text-dim); max-width: 580px; line-height: 1.7;
+      margin-bottom: 40px;
+    }
+    .hero-counts {
+      display: flex; flex-wrap: wrap; gap: 24px; margin-bottom: 48px;
+    }
+    .hero-count {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .hero-count-num {
+      font-size: 28px; font-weight: 800;
+      background: linear-gradient(135deg, var(--violet), var(--lavender));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      line-height: 1;
+    }
+    .hero-count-label { font-size: 13px; color: var(--text-dim); }
+
+    /* ─── FILTER TABS ─────────────────────────────────────────────────── */
+    .filter-bar {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      padding: 0 32px; max-width: 1200px; margin: 0 auto 40px;
+    }
+    .filter-btn {
+      padding: 7px 16px; border-radius: 99px; border: 1px solid var(--border-dim);
+      background: transparent; color: var(--text-dim); font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all .18s; font-family: var(--sans);
+    }
+    .filter-btn:hover { color: var(--text); border-color: var(--border); }
+    .filter-btn.active {
+      background: rgba(139,92,246,.15); border-color: rgba(139,92,246,.45);
+      color: var(--lavender); font-weight: 600;
+    }
+    .filter-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 18px; height: 18px; border-radius: 99px;
+      background: rgba(139,92,246,.2); font-size: 11px; font-weight: 700;
+      color: var(--lavender); margin-left: 4px;
+    }
+
+    /* ─── GRID ────────────────────────────────────────────────────────── */
+    .grid-wrap {
+      max-width: 1200px; margin: 0 auto; padding: 0 32px 96px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+
+    /* ─── CARD ────────────────────────────────────────────────────────── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: border-color .22s, box-shadow .22s, transform .22s;
+      cursor: pointer;
+    }
+    .card:hover {
+      border-color: rgba(139,92,246,.4);
+      box-shadow: 0 4px 40px var(--glow), 0 0 0 1px rgba(139,92,246,.12);
+      transform: translateY(-2px);
+    }
+
+    /* ─── CARD IMAGE ──────────────────────────────────────────────────── */
+    .card-image {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--bg-card2);
+    }
+    .card-image img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .4s ease;
+    }
+    .card:hover .card-image img { transform: scale(1.04); }
+
+    /* placeholder for cards with no image yet */
+    .card-image--placeholder {
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-image--placeholder svg {
+      opacity: .12; width: 40px; height: 40px;
+    }
+
+    /* ─── CARD BODY ───────────────────────────────────────────────────── */
+    .card-body {
+      padding: 16px 18px 18px;
+      display: flex; flex-direction: column; flex: 1;
+    }
+    .card-company {
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .card-title {
+      font-size: 14px; font-weight: 700; color: var(--text);
+      line-height: 1.35;
+      margin-bottom: 10px;
+      flex: 1;
+    }
+    .card-tags {
+      font-size: 12px; color: var(--text-muted); line-height: 1.4;
+    }
+
+    /* hidden state for filtering */
+    .card.hidden { display: none; }
+
+    /* ─── FOOTER ──────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border-dim);
+      padding: 32px;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .footer-copy { font-size: 13px; color: var(--text-dim); }
+    .footer-link {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 13px; color: var(--text-dim);
+      transition: color .18s;
+    }
+    .footer-link:hover { color: var(--lavender); }
+    .footer-link svg { width: 14px; height: 14px; }
+
+    /* ─── EMPTY STATE ─────────────────────────────────────────────────── */
+    .empty-state {
+      grid-column: 1/-1; padding: 80px 24px; text-align: center; color: var(--text-dim);
+      display: none;
+    }
+    .empty-state.show { display: block; }
+
+    @media (max-width: 640px) {
+      .hero { padding: 56px 20px 40px; }
+      .filter-bar { padding: 0 20px; }
+      .grid-wrap { padding: 0 20px 64px; }
+      .nav-inner { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ──────────────────────────────────────────────────────────────── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">Michael <span>Storey</span></div>
+    <a href="https://www.michael-storey.com/work" class="nav-back">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M10 12L6 8l4-4"/>
+      </svg>
+      michael-storey.com
+    </a>
+  </div>
+</nav>
+
+<!-- ─── HERO ──────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-eyebrow">Selected Work</div>
+  <h1><span class="grad">Case Studies</span></h1>
+  <p class="hero-sub">Product design, AI strategy, and organizational leadership case studies across Amazon, and RentSpree from the last decade+.</p>
+  <div class="hero-counts">
+    <div class="hero-count"><div class="hero-count-num">17</div><div class="hero-count-label">case studies</div></div>
+    <div class="hero-count"><div class="hero-count-num">6</div><div class="hero-count-label">Amazon</div></div>
+    <div class="hero-count"><div class="hero-count-num">11</div><div class="hero-count-label">RentSpree</div></div>
+  </div>
+</section>
+
+<!-- ─── FILTER ────────────────────────────────────────────────────────────── -->
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all">All <span class="filter-count">17</span></button>
+  <button class="filter-btn" data-filter="amazon">Amazon <span class="filter-count">6</span></button>
+  <button class="filter-btn" data-filter="rentspree">RentSpree <span class="filter-count">11</span></button>
+  <button class="filter-btn" data-filter="ai">AI &amp; ML <span class="filter-count">6</span></button>
+  <button class="filter-btn" data-filter="leadership">Leadership <span class="filter-count">5</span></button>
+</div>
+
+<!-- ─── GRID ──────────────────────────────────────────────────────────────── -->
+<div class="grid-wrap">
+  <div class="grid" id="grid">
+
+    <!-- 1. RentEdge -->
+    <a href="rentedge/case-study-rentedge.html" class="card" data-cats="rentspree leadership">
+      <div class="card-image">
+        <img src="_card-images/01-rentedge.jpg" alt="RentEdge — MLS Platform" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">RentSpree</div>
+        <div class="card-title">RentEdge — Embedding RentSpree into the MLS Ecosystem</div>
+        <div class="card-tags">B2B Product · MLS Integration · Partner Design</div>
+      </div>
+    </a>
+
+    <!-- 2. Unified Messaging -->
+    <a href="messaging/messaging-case-study.html" class="card" data-cats="rentspree ai">
+      <div class="card-image">
+        <img src="_card-images/02-messaging.jpg" alt="Unified Messaging Platform" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">RentSpree</div>
+        <div class="card-title">Unified Messaging Platform</div>
+        <div class="card-tags">Conversational UX · AI Integration</div>
+      </div>
+    </a>
+
+    <!-- 3. Landlord Financial Tools -->
+    <a href="landlord-fintech/case-study-landlord-subscription.html" class="card" data-cats="rentspree">
+      <div class="card-image">
+        <img src="_card-images/03-landlord-fintech.jpg" alt="Landlord Financial Tools" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">RentSpree</div>
+        <div class="card-title">Landlord Financial Tools &amp; Banking MVP</div>
+        <div class="card-tags">MVP Strategy · Fintech · UX Research</div>
+      </div>
+    </a>
+
+    <!-- 4. AI-Native Design System -->
+    <a href="design-system/case-study-design-system.html" class="card" data-cats="rentspree ai leadership">
+      <div class="card-image">
+        <img src="_card-images/04-design-system.jpg" alt="AI-Native Design System" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">RentSpree</div>
+        <div class="card-title">Building an AI-Native Design System</div>
+        <div class="card-tags">Design Systems · AI Infra · Leadership</div>
+      </div>
+    </a>
+
+    <!-- 5. AI Orchestration -->
+    <a href="ai-power-up/ai-powerup-rentspree.html" class="card" data-cats="rentspree ai">
+      <div class="card-image">
+        <img src="_card-images/05-ai-orchestration.jpg" alt="AI Orchestration &amp; Assistance" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">RentSpree</div>
+        <div class="card-title">AI Orchestration &amp; Assistance</div>
+        <div class="card-tags">AI Innovation · Compliance UX · Revenue</div>
+      </div>
+    </a>
+
+    <!-- 6. Application Redesign -->
+    <a href="app-redesign/case-study-application-redesign.html" class="card" data-cats="rentspree">
+      <div class="card-image">
+        <img src="_card-images/06-app-redesign.jpg" alt="Rental Application Redesign" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">RentSpree</div>
+        <div class="card-title">Rental Application Redesign</div>
+        <div class="card-tags">Product Design · Mobile-First · A/B Testing</div>
+      </div>
+    </a>
+
+    <!-- 7. Transforming RentSpree -->
+    <a href="transforming-rentspree/rentspree-transformation.html" class="card" data-cats="rentspree leadership">
+      <div class="card-image">
+        <img src="_card-images/07-transforming-rentspree.jpg" alt="Transforming RentSpree" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">RentSpree</div>
+        <div class="card-title">Transforming RentSpree</div>
+        <div class="card-tags">Org Design · Product Strategy</div>
+      </div>
+    </a>
+
+    <!-- 8. Inside Amazon -->
+    <a href="inside-amazon/inside-amazon.html" class="card" data-cats="amazon leadership">
+      <div class="card-image">
+        <img src="_card-images/08-inside-amazon.jpg" alt="Inside Amazon Intranet Redesign" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">Amazon</div>
+        <div class="card-title">Inside Amazon — Intranet Redesign</div>
+        <div class="card-tags">Employee Experience · UX Strategy</div>
+      </div>
+    </a>
+
+    <!-- 9. Amazon Imaging -->
+    <a href="amazon-imaging/amazon-imaging-applications.html" class="card" data-cats="amazon leadership">
+      <div class="card-image">
+        <img src="_card-images/09-amazon-imaging.jpg" alt="Amazon Imaging Business" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">Amazon</div>
+        <div class="card-title">Building Amazon's Imaging Business</div>
+        <div class="card-tags">Platform Strategy · ML Product · P&amp;L</div>
+      </div>
+    </a>
+
+    <!-- 10. Amazon Prime -->
+    <a href="amazon-prime/amazon-prime-iliad.html" class="card" data-cats="amazon">
+      <div class="card-image">
+        <img src="_card-images/10-amazon-prime.jpg" alt="Amazon Prime Cancellation Flow" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">Amazon</div>
+        <div class="card-title">Amazon Prime — Cancellation Flow Redesign</div>
+        <div class="card-tags">Retention UX · Conversion · A/B Testing</div>
+      </div>
+    </a>
+
+    <!-- 11. Amazon Creative Services -->
+    <a href="amazon-creative-services/amazon-creative-services-portfolio.html" class="card" data-cats="amazon leadership">
+      <div class="card-image">
+        <img src="_card-images/11-creative-services.jpg" alt="Amazon Creative Services" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">Amazon</div>
+        <div class="card-title">Amazon Creative Services</div>
+        <div class="card-tags">Creative Ops · Brand &amp; Campaign · Workflow Automation · Photography</div>
+      </div>
+    </a>
+
+    <!-- 12. Amazon Consumer Gift Guides -->
+    <a href="amazon-gift-guides/amazon-consumer-gift-guides.html" class="card" data-cats="amazon">
+      <div class="card-image">
+        <img src="_card-images/12-gift-guides.jpg" alt="Amazon Consumer Gift Guides" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">Amazon</div>
+        <div class="card-title">Amazon Consumer Gift Guides</div>
+        <div class="card-tags">UX Design · Standardisation · IA</div>
+      </div>
+    </a>
+
+    <!-- 13. Self-Serve Banner -->
+    <a href="amazon-banner/amazon-banner-publishing-tool.html" class="card" data-cats="amazon">
+      <div class="card-image">
+        <img src="_card-images/13-banner-tool.jpg" alt="Self-Serve Banner Publishing Tool" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">Amazon</div>
+        <div class="card-title">Self-Serve Banner Publishing Tool</div>
+        <div class="card-tags">Design Systems · Self-Service · Automation</div>
+      </div>
+    </a>
+
+    <!-- 14. 2025 Hackathon -->
+    <a href="hackathon/case-study-buildspree-hackathon.html" class="card" data-cats="rentspree ai leadership">
+      <div class="card-image">
+        <img src="_card-images/14-hackathon.jpg" alt="2025 HackSpree AI Design Jam" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">RentSpree</div>
+        <div class="card-title">2025 HackSpree — AI Design Jam</div>
+        <div class="card-tags">AI Strategy · Hackathon · Leadership</div>
+      </div>
+    </a>
+
+    <!-- 15. AI UX Research Assistant -->
+    <a href="ai-uxr/ai-uxr-assistant-case-study.html" class="card" data-cats="rentspree ai">
+      <div class="card-image">
+        <img src="_card-images/15-ai-uxr.jpg" alt="AI UXR Assistant" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">RentSpree</div>
+        <div class="card-title">Building the AI UX Research Assistant</div>
+        <div class="card-tags">AI / ML · UX Research · RAG</div>
+      </div>
+    </a>
+
+    <!-- 16. Building Customer Obsession (VOC) — no image, gradient placeholder -->
+    <a href="voc/voice-of-the-customer-program.html" class="card" data-cats="rentspree leadership">
+      <div class="card-image">
+        <img src="_card-images/16-voc.jpg" alt="Building Customer Obsession at Scale" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">RentSpree</div>
+        <div class="card-title">Building Customer Obsession at Scale</div>
+        <div class="card-tags">Product Ops · VOC Strategy · Data Eng</div>
+      </div>
+    </a>
+
+    <!-- 17. Developing PQS — placeholder until image provided -->
+    <a href="pqs/pqs-case-study.html" class="card" data-cats="rentspree">
+      <div class="card-image">
+        <img src="_card-images/17-pqs.jpg" alt="Developing a Custom Product Quality Score" loading="lazy">
+      </div>
+      <div class="card-body">
+        <div class="card-company">RentSpree</div>
+        <div class="card-title">Developing a Custom Product Quality Score</div>
+        <div class="card-tags">Product Strategy · Data Design · KPI Framework</div>
+      </div>
+    </a>
+
+    <div class="empty-state" id="empty">No case studies match this filter.</div>
+  </div><!-- /grid -->
+</div><!-- /grid-wrap -->
+
+<!-- ─── FOOTER ─────────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-copy">© 2025 Michael Storey &mdash; All work is confidential.</span>
+    <a href="https://www.michael-storey.com/work" class="footer-link">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 12L6 8l4-4"/></svg>
+      Back to michael-storey.com
+    </a>
+  </div>
+</footer>
+
+<!-- ─── FILTER LOGIC ───────────────────────────────────────────────────────── -->
+<script>
+  const btns  = document.querySelectorAll('.filter-btn');
+  const cards = document.querySelectorAll('.card');
+  const empty = document.getElementById('empty');
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      let visible = 0;
+      cards.forEach(card => {
+        if (filter === 'all' || card.dataset.cats.split(' ').includes(filter)) {
+          card.classList.remove('hidden');
+          visible++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+      empty.classList.toggle('show', visible === 0);
+    });
+  });
+</script>
+
+</body>
+</html>
