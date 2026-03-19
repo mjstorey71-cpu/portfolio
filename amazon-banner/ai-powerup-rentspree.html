@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+    <meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+    <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Orchestration and Assistance at RentSpree | Michael Storey</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+        :root {
+      --bg:         #07070e;
+      --bg-card:    #0d0d1c;
+      --bg-card2:   #111125;
+      --primary:    #7c3aed;
+      --violet:     #8b5cf6;
+      --lavender:   #a78bfa;
+      --glow:       rgba(139,92,246,.18);
+      --border:     rgba(139,92,246,.2);
+      --text:       #b8b8c8;
+      --text-dim:   #8e8e9e;
+      --text-muted: #80808e;
+      --green:      #10b981;
+      --yellow:     #f59e0b;
+      --red:        #ef4444;
+      --blue:       #3b82f6;
+      --teal:       #06b6d4;
+      --serif: 'Georgia', serif;
+      --sans: system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      max-width: 100%;
+    }
+    a { color: var(--lavender); text-decoration: none; }
+    img { max-width: 100%; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; width: 100%; }
+    .section { padding: 90px 0; }
+    .section-label {
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 12px;
+      color: var(--lavender);
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(26px, 3.5vw, 38px);
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+    .section-body {
+      color: var(--text-dim);
+      max-width: 700px;
+      line-height: 1.8;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .grid-2 > *, .grid-3 > * { min-width: 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .card:hover {
+      border-color: rgba(139, 92, 246, 0.4);
+      box-shadow: 0 0 32px var(--glow);
+    }
+    .card-sm { padding: 24px; }
+    .card-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .card-body { color: var(--text-dim); font-size: 15px; line-height: 1.7; }
+    .badge-pill {
+      background: rgba(139,92,246,.15);
+      border: 1px solid rgba(139,92,246,.3);
+      color: var(--lavender);
+      font-size: 12px; font-weight: 600;
+      padding: 4px 12px; border-radius: 99px;
+    }
+    .hero {
+      padding: 120px 0 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(124,58,237,.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+    .hero-eyebrow span { color: var(--text-dim); font-size: 14px; }
+    .hero-title {
+      font-size: clamp(38px, 6vw, 72px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -.02em;
+      margin-bottom: 28px;
+    }
+    .grad-text {
+      background: linear-gradient(135deg, #fff 30%, var(--lavender) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: 20px;
+      color: var(--text-dim);
+      max-width: 680px;
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+    .hero-tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 56px; }
+    .tag {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      color: var(--text-dim);
+      font-size: 12px; font-weight: 500;
+      padding: 5px 10px; border-radius: 8px;
+      white-space: nowrap;
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr 1px 1fr 1px 1fr;
+      column-gap: 28px;
+      padding: 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      max-width: min(900px, 100%);
+      box-sizing: border-box;
+    }
+    .hero-stat { display: flex; flex-direction: column; gap: 4px; }
+    .hero-stat-value {
+      font-size: 40px; font-weight: 800;
+      background: linear-gradient(135deg, var(--violet), var(--lavender));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+    .hero-stat-label { font-size: 13px; color: var(--text-dim); }
+    .hero-stat-divider { background: var(--border); }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .problem-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(239,68,68,.2);
+      border-radius: 14px; padding: 28px;
+    }
+    .problem-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+    .problem-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .problem-card p { font-size: 14px; color: var(--text-dim); line-height: 1.65; }
+    .pillars-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 48px;
+    }
+    .pillar-card {
+      background: var(--bg-card);
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      transition: transform .2s, box-shadow .2s;
+      min-width: 0;
+    }
+    .pillar-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px var(--glow); }
+    .pillar-header { padding: 28px 28px 20px; border-bottom: 1px solid var(--border); }
+    .pillar-emoji { font-size: 32px; margin-bottom: 10px; display: block; }
+    .pillar-name { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .pillar-tagline { font-size: 14px; color: var(--text-dim); font-style: italic; }
+    .pillar-body { padding: 24px 28px; }
+    .metric-row {
+      display: flex; align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+    .metric-row:last-child { border-bottom: none; }
+    .metric-name { font-size: 14px; color: var(--text-dim); flex: 1; }
+    .metric-weight {
+      font-size: 13px; font-weight: 700;
+      color: var(--lavender);
+      background: rgba(139,92,246,.12);
+      padding: 3px 9px; border-radius: 6px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .formula-box {
+      background: var(--bg-card2);
+      border: 1px solid rgba(139,92,246,.3);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      margin: 40px 0;
+      position: relative; overflow: hidden;
+    }
+    .formula-box::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(139,92,246,.12), transparent 60%);
+      pointer-events: none;
+    }
+    .formula-text {
+      font-family: 'Courier New', monospace;
+      font-size: clamp(15px, 2.2vw, 20px);
+      color: var(--lavender);
+      letter-spacing: .04em;
+      margin-bottom: 16px;
+    }
+    .formula-label { font-size: 13px; color: var(--text-muted); }
+    .step-list { counter-reset: steps; list-style: none; margin-top: 32px; }
+    .step-item {
+      counter-increment: steps;
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .step-item:last-child { border-bottom: none; }
+    .step-num {
+      min-width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--primary), var(--violet));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800; color: white;
+    }
+    .step-content h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+    .step-content p { font-size: 14px; color: var(--text-dim); line-height: 1.65; }
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .chart-card.full-width { grid-column: 1 / -1; }
+    .chart-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .chart-subtitle { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; }
+    .chart-wrap { position: relative; height: 260px; overflow: hidden; }
+    .chart-wrap-tall { position: relative; height: 320px; overflow: hidden; }
+    .gauge-wrap { position: relative; height: 200px; overflow: hidden; }
+    .timeline { position: relative; margin-top: 48px; }
+    .timeline::before {
+      content: '';
+      position: absolute; left: 20px; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(to bottom, var(--primary), transparent);
+    }
+    .timeline-item { display: flex; align-items: flex-start; gap: 28px; padding: 0 0 36px 0; }
+    .tl-dot {
+      min-width: 40px; height: 40px; border-radius: 50%;
+      background: var(--bg-card);
+      border: 2px solid var(--violet);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; position: relative; z-index: 1;
+      flex-shrink: 0;
+    }
+    .tl-content { padding-top: 6px; }
+    .tl-date { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+    .tl-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .tl-body { font-size: 14px; color: var(--text-dim); line-height: 1.7; }
+    .blockquote {
+      border-left: 3px solid var(--violet);
+      padding: 20px 28px;
+      background: rgba(139,92,246,.06);
+      border-radius: 0 10px 10px 0;
+      margin: 24px 0;
+    }
+    .blockquote p { font-size: 16px; color: var(--text); font-style: italic; line-height: 1.7; }
+    .blockquote cite { display: block; margin-top: 10px; font-size: 13px; color: var(--text-muted); font-style: normal; }
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px; margin-top: 40px;
+    }
+    .impact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 24px;
+      text-align: center;
+    }
+    .impact-num {
+      font-size: 48px; font-weight: 800; line-height: 1;
+      background: linear-gradient(135deg, var(--violet), var(--lavender));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .impact-label { font-size: 14px; color: var(--text-dim); }
+    footer {
+      padding: 60px 0 40px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted); font-size: 14px;
+      text-align: center;
+    }
+    footer p { margin-bottom: 8px; }
+    .jump-nav {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+      margin-top: 20px; margin-bottom: 32px;
+    }
+    .jump-label {
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--text-muted); margin-right: 4px;
+    }
+    .jump-nav a {
+      font-size: 13px; font-weight: 500;
+      color: var(--text-dim);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      padding: 5px 14px; border-radius: 99px;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .jump-nav a:hover {
+      color: var(--lavender);
+      border-color: rgba(139,92,246,.4);
+      background: rgba(139,92,246,.08);
+    }
+    .mt-6 { margin-top: 24px; }
+    .mt-8 { margin-top: 32px; }
+    .mt-12 { margin-top: 48px; }
+    .text-center { text-align: center; }
+    .feature-flow {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 40px;
+    }
+    .flow-card {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .flow-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--violet));
+    }
+    .flow-num {
+      font-size: 40px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--violet), var(--lavender));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .flow-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .flow-body { font-size: 14px; color: var(--text-dim); line-height: 1.7; }
+
+    @media (max-width: 1024px) {
+      .pillars-row   { grid-template-columns: 1fr 1fr; }
+      .hero-stats    { column-gap: 20px; max-width: 100%; }
+      .chart-grid    { grid-template-columns: 1fr 1fr; }
+      .feature-flow  { grid-template-columns: 1fr 1fr; }
+      .chart-card, .pillar-card, .card { min-width: 0; }
+    }
+    @media (max-width: 900px) {
+      .chart-grid             { grid-template-columns: 1fr; }
+      .chart-card.full-width  { grid-column: 1; }
+      .chart-wrap             { height: 240px; }
+      .chart-wrap-tall        { height: 300px; }
+      .gauge-wrap             { height: 200px; }
+    }
+    @media (max-width: 768px) {
+      .pillars-row,
+      .chart-grid,
+      .grid-2,
+      .grid-3,
+      .feature-flow      { grid-template-columns: 1fr; }
+      .chart-card.full-width { grid-column: 1; }
+      .hero-stats {
+        display: flex; flex-direction: column;
+        gap: 20px; padding: 24px; max-width: 100%;
+      }
+      .hero-stat-divider     { width: 100%; height: 1px; }
+      .container             { padding: 0 20px; }
+      .section               { padding: 64px 0; }
+      .formula-box           { padding: 28px 20px; }
+      .chart-wrap            { height: 220px; }
+      .chart-wrap-tall       { height: 280px; }
+    }
+    @media (max-width: 480px) {
+      .hero                  { padding: 80px 0 56px; }
+      .hero-stat-value       { font-size: 40px; }
+      .hero-stats            { padding: 18px; }
+      .section               { padding: 48px 0; }
+      .container             { padding: 0 16px; }
+      .pillar-header         { padding: 20px 20px 16px; }
+      .pillar-body           { padding: 16px 20px; }
+      .card                  { padding: 20px; }
+      .impact-num            { font-size: 36px; }
+      .blockquote            { padding: 16px 20px; }
+      .formula-box           { padding: 20px 16px; }
+      .chart-wrap            { height: 180px; }
+      .chart-wrap-tall       { height: 240px; }
+      .gauge-wrap            { height: 160px; }
+    }
+  
+    /* ─── SCREEN GALLERY ────────────────────────────────────────── */
+    
+    
+    
+    
+    
+    .screen-card img { width: 100%; display: block; }
+    
+    
+    
+    
+    
+    
+    
+    @media (max-width: 768px) {
+      
+      
+      
+      
+    }
+
+  
+    
+    
+    /* ── screen gallery ── */
+    .screens-section { padding: 90px 0; }
+    .screen-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 32px;
+    }
+    .screen-card {
+      background: var(--bg-card2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: box-shadow .2s;
+    }
+    .screen-card:hover { box-shadow: 0 8px 32px var(--glow); }
+    .screen-card img { width: 100%; display: block; }
+    .screen-caption {
+      padding: 14px 18px;
+      border-top: 1px solid var(--border);
+    }
+    .screen-caption strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #b4bdc6;
+      margin-bottom: 3px;
+    }
+    .screen-caption span {
+      font-size: 13px;
+      color: #8a9199;
+      line-height: 1.5;
+    }
+    .screen-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .screen-badge.before {
+      background: rgba(239,68,68,.15);
+      color: #ef4444;
+      border: 1px solid rgba(239,68,68,.3);
+    }
+    .screen-badge.after {
+      background: rgba(16,185,129,.12);
+      color: var(--primary);
+      border: 1px solid rgba(16,185,129,.3);
+    }
+    .screen-placeholder {
+      width: 100%;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-card);
+      color: #8a9199;
+      font-size: 13px;
+      gap: 8px;
+      padding: 40px;
+      text-align: center;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+<!-- ═══════════════════════════════════ PORTFOLIO NAV -->
+<style>
+  .pnav {
+    position: sticky; top: 0; z-index: 200;
+    background: rgba(7,7,14,0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    font-family: system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+  }
+  .pnav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 28px;
+    height: 52px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+  }
+  .pnav-brand {
+    font-size: 14px; font-weight: 700; color: #ededf8;
+    text-decoration: none; letter-spacing: -.01em; white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .pnav-brand span { color: #a78bfa; }
+  .pnav-controls {
+    display: flex; align-items: center; gap: 4px;
+  }
+  .pnav-prev, .pnav-next {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; color: #8888aa; text-decoration: none;
+    padding: 5px 10px; border-radius: 6px;
+    transition: color .18s, background .18s;
+    white-space: nowrap; max-width: 180px; overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pnav-prev:hover, .pnav-next:hover { color: #a78bfa; background: rgba(139,92,246,.08); }
+  .pnav-prev svg, .pnav-next svg { flex-shrink: 0; }
+  .pnav-sep {
+    width: 1px; height: 18px; background: rgba(255,255,255,0.1); margin: 0 2px;
+    flex-shrink: 0;
+  }
+  .pnav-menu { position: relative; }
+  .pnav-menu-btn {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 600; color: #a78bfa;
+    background: rgba(139,92,246,.1); border: 1px solid rgba(139,92,246,.25);
+    padding: 5px 12px; border-radius: 6px; cursor: pointer;
+    transition: background .18s, border-color .18s;
+    font-family: inherit; white-space: nowrap;
+  }
+  .pnav-menu-btn:hover { background: rgba(139,92,246,.18); border-color: rgba(139,92,246,.45); }
+  .pnav-menu-btn svg { transition: transform .2s; }
+  .pnav-menu-btn.open svg { transform: rotate(180deg); }
+  .pnav-dropdown {
+    display: none; position: absolute; top: calc(100% + 8px); right: 0;
+    background: #0d0d1c; border: 1px solid rgba(139,92,246,.2);
+    border-radius: 12px; box-shadow: 0 16px 48px rgba(0,0,0,.6);
+    min-width: 480px; padding: 8px;
+    z-index: 300;
+  }
+  .pnav-dropdown.open { display: block; }
+  .pnav-dropdown-header {
+    padding: 8px 10px 10px;
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+    color: #606080; border-bottom: 1px solid rgba(255,255,255,0.06);
+    margin-bottom: 6px;
+  }
+  .pnav-dropdown-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+  }
+  .pnav-dropdown-item {
+    display: flex; align-items: baseline; gap: 8px;
+    padding: 7px 10px; border-radius: 7px; text-decoration: none;
+    transition: background .15s;
+  }
+  .pnav-dropdown-item:hover { background: rgba(139,92,246,.1); }
+  .pnav-dropdown-item.current { background: rgba(139,92,246,.12); }
+  .pnav-dropdown-item.current .pnav-dd-title { color: #a78bfa; }
+  .pnav-dd-num {
+    font-size: 10px; color: #606080; font-weight: 600;
+    min-width: 16px; text-align: right; flex-shrink: 0;
+  }
+  .pnav-dd-title { font-size: 12px; color: #ededf8; line-height: 1.3; }
+  .pnav-dd-co { font-size: 10px; color: #606080; white-space: nowrap; }
+  .pnav-footer {
+    margin-top: 80px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    font-family: system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+  }
+  .pnav-footer-inner {
+    max-width: 1200px; margin: 0 auto; padding: 32px 28px;
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    align-items: center; gap: 24px;
+  }
+  .pnav-footer-prev, .pnav-footer-next {
+    text-decoration: none; display: flex; flex-direction: column; gap: 4px;
+    padding: 14px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.07);
+    transition: border-color .2s, background .2s;
+  }
+  .pnav-footer-prev:hover, .pnav-footer-next:hover {
+    border-color: rgba(139,92,246,.3); background: rgba(139,92,246,.06);
+  }
+  .pnav-footer-next { text-align: right; }
+  .pnav-footer-label {
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
+    color: #606080;
+  }
+  .pnav-footer-title {
+    font-size: 14px; font-weight: 600; color: #ededf8; line-height: 1.3;
+  }
+  .pnav-footer-index {
+    text-align: center; text-decoration: none;
+    font-size: 12px; color: #8888aa; white-space: nowrap;
+    padding: 8px 16px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.07);
+    transition: color .18s, border-color .18s;
+  }
+  .pnav-footer-index:hover { color: #a78bfa; border-color: rgba(139,92,246,.3); }
+  @media (max-width: 640px) {
+    .pnav-prev, .pnav-next { display: none; }
+    .pnav-dropdown { min-width: calc(100vw - 32px); right: -14px; }
+    .pnav-dropdown-grid { grid-template-columns: 1fr; }
+    .pnav-footer-inner { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto; }
+    .pnav-footer-index { grid-column: 1/-1; order: -1; }
+  }
+</style>
+
+<nav class="pnav">
+  <div class="pnav-inner">
+    <a href="../index.html" class="pnav-brand">Michael <span>Storey</span></a>
+    <div class="pnav-controls">
+      <a href="../design-system/case-study-design-system.html" class="pnav-prev">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7.5 2.5L4 6l3.5 3.5"/></svg>
+        Design System
+      </a>
+      <div class="pnav-sep"></div>
+      <div class="pnav-menu">
+        <button class="pnav-menu-btn" id="pnavBtn">
+          All Cases
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 4l4 4 4-4"/></svg>
+        </button>
+        <div class="pnav-dropdown" id="pnavDropdown">
+          <div class="pnav-dropdown-header">17 Case Studies</div>
+          <div class="pnav-dropdown-grid">
+            <a href="../rentedge/case-study-rentedge.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">01</span>
+              <span><span class="pnav-dd-title">RentEdge</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../messaging/messaging-case-study.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">02</span>
+              <span><span class="pnav-dd-title">Unified Messaging</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../landlord-fintech/case-study-landlord-subscription.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">03</span>
+              <span><span class="pnav-dd-title">Landlord Fintech</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../design-system/case-study-design-system.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">04</span>
+              <span><span class="pnav-dd-title">Design System</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="ai-powerup-rentspree.html" class="pnav-dropdown-item current">
+              <span class="pnav-dd-num">05</span>
+              <span><span class="pnav-dd-title">AI Orchestration</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../app-redesign/case-study-application-redesign.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">06</span>
+              <span><span class="pnav-dd-title">App Redesign</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../transforming-rentspree/rentspree-transformation.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">07</span>
+              <span><span class="pnav-dd-title">Transforming RentSpree</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../inside-amazon/inside-amazon.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">08</span>
+              <span><span class="pnav-dd-title">Inside Amazon</span><br><span class="pnav-dd-co">Amazon</span></span>
+            </a>
+            <a href="../amazon-imaging/amazon-imaging-applications.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">09</span>
+              <span><span class="pnav-dd-title">Amazon Imaging</span><br><span class="pnav-dd-co">Amazon</span></span>
+            </a>
+            <a href="../amazon-prime/amazon-prime-iliad.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">10</span>
+              <span><span class="pnav-dd-title">Amazon Prime</span><br><span class="pnav-dd-co">Amazon</span></span>
+            </a>
+            <a href="../amazon-creative-services/amazon-creative-services-portfolio.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">11</span>
+              <span><span class="pnav-dd-title">Creative Services</span><br><span class="pnav-dd-co">Amazon</span></span>
+            </a>
+            <a href="../amazon-gift-guides/amazon-consumer-gift-guides.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">12</span>
+              <span><span class="pnav-dd-title">Gift Guides</span><br><span class="pnav-dd-co">Amazon</span></span>
+            </a>
+            <a href="../amazon-banner/amazon-banner-publishing-tool.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">13</span>
+              <span><span class="pnav-dd-title">Banner Tool</span><br><span class="pnav-dd-co">Amazon</span></span>
+            </a>
+            <a href="../hackathon/case-study-buildspree-hackathon.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">14</span>
+              <span><span class="pnav-dd-title">HackSpree 2025</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../ai-uxr/ai-uxr-assistant-case-study.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">15</span>
+              <span><span class="pnav-dd-title">AI UXR Assistant</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../voc/voice-of-the-customer-program.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">16</span>
+              <span><span class="pnav-dd-title">Customer Obsession</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+            <a href="../pqs/pqs-case-study.html" class="pnav-dropdown-item">
+              <span class="pnav-dd-num">17</span>
+              <span><span class="pnav-dd-title">Product Quality Score</span><br><span class="pnav-dd-co">RentSpree</span></span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="pnav-sep"></div>
+      <a href="../app-redesign/case-study-application-redesign.html" class="pnav-next">
+        App Redesign
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4.5 2.5L8 6l-3.5 3.5"/></svg>
+      </a>
+    </div>
+  </div>
+</nav>
+<script>
+  (function() {
+    var btn = document.getElementById('pnavBtn');
+    var dd  = document.getElementById('pnavDropdown');
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var open = dd.classList.toggle('open');
+      btn.classList.toggle('open', open);
+    });
+    document.addEventListener('click', function() {
+      dd.classList.remove('open');
+      btn.classList.remove('open');
+    });
+  })();
+</script>
+
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">
+      <span class="badge-pill">AI Innovation</span>
+      <span>RentSpree · January to May 2024</span>
+    </div>
+
+    <div class="jump-nav">
+      <span class="jump-label">Jump to</span>
+      <a href="#challenge">Challenge</a>
+      <a href="#solution">Solution</a>
+      <a href="#methodology">Process</a>
+      <a href="#data">Data</a>
+      <a href="#adoption">Timeline</a>
+      <a href="#impact">Impact</a>
+    </div>
+
+    <h1 class="hero-title">
+      <span class="grad-text">AI Orchestration and Assistance</span>
+    </h1>
+    <p class="hero-sub">Building on a foundation of cultural transformation, the team applied AI to solve a major customer pain point: slow, manual, and risky tenant screening. The result was faster processes, smarter decisions, fairer outcomes, and a 50% increase in screening revenue within twelve months.</p>
+
+    <div class="hero-tags">
+      <span class="tag">AI/ML Product Design</span>
+      <span class="tag">Tenant Screening</span>
+      <span class="tag">Compliance UX</span>
+      <span class="tag">Revenue Growth</span>
+      <span class="tag">PropTech</span>
+      <span class="tag">Iterative Experimentation</span>
+      <span class="tag">Intelligent Automation</span>
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-value">+50%</span>
+        <span class="hero-stat-label">Screening Revenue (YoY)</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">+147%</span>
+        <span class="hero-stat-label">Premium Screening Conversion</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">-90%</span>
+        <span class="hero-stat-label">Time on Task (45 min to 5 min)</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-value">+130%</span>
+        <span class="hero-stat-label">Listings Created</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="screens-ai-features" class="screens-section">
+  <div class="container">
+    <p class="section-eyebrow">AI in Action</p>
+    <h2 class="section-title">Features That Do the Work</h2>
+    <p class="section-subtitle">AI-powered features designed to surface insight and reduce friction — integrated into existing workflows, not bolted on.</p>
+    <div class="screen-stack">
+      <div class="screen-card">
+        <img src="images/slide_042_img_045_web.jpg" alt="AI feature overview" loading="lazy" />
+        <div class="screen-caption">
+          
+          <strong>AI feature overview</strong>
+          <span>The AI layer embedded directly into core landlord and agent workflows.</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="images/slide_044_img_046_web.jpg" alt="AI-powered insights" loading="lazy" />
+        <div class="screen-caption">
+          
+          <strong>AI-powered insights</strong>
+          <span>Contextual recommendations appearing where landlords are already making decisions.</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="images/slide_045_img_047_web.jpg" alt="Intelligent suggestions" loading="lazy" />
+        <div class="screen-caption">
+          
+          <strong>Intelligent suggestions</strong>
+          <span>Proactive nudges reducing manual work for agents managing multiple listings.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="screens-journey" class="screens-section">
+  <div class="container">
+    <p class="section-eyebrow">User Research</p>
+    <h2 class="section-title">Journey &amp; Flow Validation</h2>
+    <p class="section-subtitle">Every AI touchpoint was validated against real user journeys to ensure it reduced friction rather than introducing new complexity.</p>
+    <div class="screen-stack">
+      <div class="screen-card">
+        <img src="images/slide_047_img_049_web.jpg" alt="Journey mapping — discovery" loading="lazy" />
+        <div class="screen-caption">
+          
+          <strong>Journey mapping. discovery</strong>
+          <span>User journey showing where friction and drop-off occurred in the existing flow.</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="images/slide_048_img_050_web.jpg" alt="Opportunity areas" loading="lazy" />
+        <div class="screen-caption">
+          
+          <strong>Opportunity areas</strong>
+          <span>Research synthesis surfacing the highest-value moments for AI intervention.</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="images/slide_049_img_051_web.jpg" alt="Prototype testing" loading="lazy" />
+        <div class="screen-caption">
+          
+          <strong>Prototype testing</strong>
+          <span>Concept validation with real users. testing comprehension, trust, and value perception.</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="images/slide_050_img_052_web.jpg" alt="Refined interaction model" loading="lazy" />
+        <div class="screen-caption">
+          
+          <strong>Refined interaction model</strong>
+          <span>Final interaction patterns validated across agent and landlord personas.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="screens-awards" class="screens-section">
+  <div class="container">
+    <p class="section-eyebrow">Recognition</p>
+    <h2 class="section-title">Award-Winning Work</h2>
+    <p class="section-subtitle">The AI features were recognised externally for their impact on product experience and design innovation.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:32px;">
+      <div class="screen-card">
+        <img src="images/slide_052_img_054_web.jpg" alt="Recognition" loading="lazy" />
+        <div class="screen-caption">
+          <strong>Recognition</strong>
+          <span>Industry acknowledgement of the AI design work and its measurable user impact.</span>
+        </div>
+      </div>
+      <div class="screen-card">
+        <img src="images/slide_052_img_055_web.jpg" alt="Award detail" loading="lazy" />
+        <div class="screen-caption">
+          <strong>Award detail</strong>
+          <span>Specific recognition for the innovation and craft of the AI-powered experience.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider" />
+
+<!-- CHALLENGE -->
+<section class="section" id="challenge">
+  <div class="container">
+    <p class="section-label">The Challenge</p>
+    <h2 class="section-title">Screening Was Broken, and Customers Knew It</h2>
+    <p class="section-body">Tenant screening was a known friction point in the RentSpree experience. Customers did not trust the process, and every delay in getting a clear result meant lost revenue for agents and landlords. The existing workflow relied on manual review, was error-prone, and created real compliance anxiety for landlords operating in heavily regulated markets.</p>
+
+    <div class="problem-grid">
+      <div class="problem-card">
+        <span class="problem-icon">🐌</span>
+        <h3>Manual Reviews Were Slow</h3>
+        <p>The screening process required agents and landlords to manually interpret dense reports, leading to delays in decision-making and lost applicants who chose faster alternatives.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">📋</span>
+        <h3>Agents Needed Clearer Results</h3>
+        <p>Report outputs were hard to parse quickly. Agents needed instant, actionable insights, not raw data, to confidently recommend applicants to their landlord clients.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">⚖️</span>
+        <h3>Compliance Risk Was Real</h3>
+        <p>Landlords were genuinely afraid of inadvertently violating Fair Housing laws. Without guidance built into the workflow, many avoided using premium screening features altogether.</p>
+      </div>
+    </div>
+
+    <div class="blockquote mt-8">
+      <p>"Tenant screening was a known friction point. Customers did not trust the process, and every delay meant lost revenue for them."</p>
+      <cite>- Michael Storey, Head of Product Design and Research</cite>
+    </div>
+  </div>
+</section>
+<hr class="divider" />
+
+<!-- SOLUTION / FRAMEWORK -->
+<section class="section" id="solution">
+  <div class="container">
+    <p class="section-label">The Solution</p>
+    <h2 class="section-title">AI That Makes Screening Faster, Fairer, and Smarter</h2>
+
+    <div class="grid-2" style="align-items: start; gap: 48px;">
+      <div>
+        <p class="section-body">The AI capability was built on a foundation the team had already laid: customer obsession, a strong design system, and a culture of experimentation. The innovation did not start with technology; it started with listening to what customers needed most and working backward from trust.</p>
+        <p class="section-body mt-6">Rather than bolting AI onto the existing experience, the team redesigned the entire screening workflow around intelligent assistance. AI auto-ranked applicants while embedding compliance guardrails directly into the decision flow. Landlords received clear, unbiased decision support at every step, removing the anxiety of making high-stakes decisions without guidance.</p>
+      </div>
+      <div>
+        <div class="card" style="background: var(--bg-card2);">
+          <div class="card-title" style="margin-bottom: 20px; font-size: 18px;">Three AI Capabilities</div>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <span style="font-size: 22px; flex-shrink: 0;">🤖</span>
+              <div>
+                <div style="font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 3px;">Intelligent Applicant Ranking</div>
+                <div style="font-size: 14px; color: var(--text-dim);">AI auto-ranks applicants against landlord criteria with built-in compliance guardrails to prevent discriminatory decision patterns.</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <span style="font-size: 22px; flex-shrink: 0;">🏘</span>
+              <div>
+                <div style="font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 3px;">AI-Generated Listings and Leases</div>
+                <div style="font-size: 14px; color: var(--text-dim);">Leases and property listings are auto-generated with tailored suggestions to enhance appeal, reducing creation time from 45 minutes to 5 minutes.</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 14px; align-items: flex-start;">
+              <span style="font-size: 22px; flex-shrink: 0;">📝</span>
+              <div>
+                <div style="font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 3px;">Intelligent Communication Drafts</div>
+                <div style="font-size: 14px; color: var(--text-dim);">After approval decisions, the AI generates personalized acceptance letters and tailored messages for unsuccessful applicants, saving significant time.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-flow">
+      <div class="flow-card">
+        <div class="flow-num">01</div>
+        <div class="flow-title">List and Attract</div>
+        <div class="flow-body">AI generates the listing with benefit-led copy and compliance-ready content. Landlords can publish in minutes rather than hours.</div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-num">02</div>
+        <div class="flow-title">Screen and Rank</div>
+        <div class="flow-body">Applicants are automatically scored and ranked. Compliance guidance is embedded at the point of decision, not in a separate policy document.</div>
+      </div>
+      <div class="flow-card">
+        <div class="flow-num">03</div>
+        <div class="flow-title">Decide and Communicate</div>
+        <div class="flow-body">One-tap conditional acceptance flows guide landlords through legal requirements. The AI then drafts personalized messages for all applicants.</div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider" />
+
+<!-- METHODOLOGY / PROCESS -->
+<hr class="divider" />
+<section class="section" id="methodology">
+  <div class="container">
+    <p class="section-label">The Process</p>
+    <h2 class="section-title">Innovation Through Trust, Not Just Technology</h2>
+    <p class="section-body">This project succeeded because it was grounded in customer insight before a single line of AI code was written. The design team led discovery, built the trust architecture, and shaped the AI product's interaction model from the customer perspective outward.</p>
+
+    <div class="formula-box">
+      <div class="formula-text">Customer Trust + Compliance by Design + AI Intelligence = Revenue at Scale</div>
+      <div class="formula-label">Innovation does not always start with tech. It starts with listening and earning trust through results.</div>
+    </div>
+
+    <ul class="step-list">
+      <li class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Deep Customer Research on Screening Pain</h4>
+          <p>Conducted qualitative interviews with landlords, agents, and applicants to understand the specific anxiety points in the screening process. Identified that compliance uncertainty was the primary barrier to premium screening adoption.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Map the Full Journey</h4>
+          <p>Mapped the end-to-end screening workflow for all three user types to identify where AI could remove friction, add intelligence, and build confidence. Created story-based scenarios to communicate the vision to engineering and business stakeholders.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Design Compliance Into the Interaction</h4>
+          <p>Worked with legal and product to embed compliance guidance directly into the AI-assisted decision flow. Designed the conditional acceptance flow so that landlords in regulated markets were guided through the correct process, rather than being warned after the fact.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Prototype, Test, and Iterate</h4>
+          <p>Built prototypes of the AI ranking interface and tested with real landlords and agents. Four months of iterative experimentation drove premium screening conversion from 19% to 47%. Each release was measured and the next iteration was designed around what the data revealed.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h4>Extend AI to Listing and Communication</h4>
+          <p>Applied the AI capability to listing creation and applicant communication, reducing listing time on task by 90%. These features drove a 130% increase in listings created and earned recognition from industry awards.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+<hr class="divider" />
+
+<!-- DATA / CHARTS -->
+<hr class="divider" />
+<section class="section" id="data">
+  <div class="container">
+    <p class="section-label">The Data</p>
+    <h2 class="section-title">Numbers That Prove the Trust Was Earned</h2>
+    <p class="section-body">Results span January to May 2024 with YoY comparisons. Q1 2025 forecasts, based on early results, project screening revenue to grow an additional 70% year-over-year, validating the compound effect of trust-based AI design.</p>
+
+    <div class="chart-grid">
+      <div class="chart-card full-width">
+        <div class="chart-title">Premium Screening Conversion Journey</div>
+        <div class="chart-subtitle">Monthly conversion rate from Jan to May 2024 through iterative experimentation</div>
+        <div class="chart-wrap-tall">
+          <canvas id="conversionChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Listing Creation Time on Task</div>
+        <div class="chart-subtitle">Minutes required to create a listing before and after AI assistance</div>
+        <div class="chart-wrap">
+          <canvas id="timeChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Screening Revenue Growth</div>
+        <div class="chart-subtitle">Indexed revenue showing YoY growth and projected trajectory</div>
+        <div class="chart-wrap">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Premium Conversion Rate</div>
+        <div class="chart-subtitle">End state: 47% premium screening conversion</div>
+        <div class="gauge-wrap">
+          <canvas id="convGauge"></canvas>
+        </div>
+        <div style="text-align:center;margin-top:8px;">
+          <span style="font-size:28px;font-weight:800;background:linear-gradient(135deg,var(--violet),var(--lavender));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">47%</span>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:2px;">Premium screening conversion (from 19%)</div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Listings Created Growth</div>
+        <div class="chart-subtitle">Indexed growth in listings created after AI listing tools launched</div>
+        <div class="chart-wrap">
+          <canvas id="listingsChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider" />
+
+<!-- TIMELINE -->
+<section class="section" id="adoption">
+  <div class="container">
+    <p class="section-label">The Timeline</p>
+    <h2 class="section-title">Five Months from Problem to Proof</h2>
+    <p class="section-body">The AI power-up was designed and shipped in a focused five-month window, building on the organizational and product foundation established in the prior transformation. Speed was possible because the team already had the capability, culture, and customer insight to move decisively.</p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="tl-dot">🔍</div>
+        <div class="tl-content">
+          <div class="tl-date">January 2024</div>
+          <div class="tl-title">Discovery: Understanding the Screening Anxiety</div>
+          <div class="tl-body">Conducted focused research sessions with landlords and agents to map the screening journey and identify the specific compliance and speed pain points blocking premium feature adoption.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">🗺</div>
+        <div class="tl-content">
+          <div class="tl-date">February 2024</div>
+          <div class="tl-title">Journey Design and AI Architecture</div>
+          <div class="tl-body">Designed the end-to-end AI-assisted screening flow, including the compliance guardrail architecture and applicant ranking model. Story-based prototypes were reviewed with legal, product, and engineering before any build began.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">🧪</div>
+        <div class="tl-content">
+          <div class="tl-date">March 2024</div>
+          <div class="tl-title">First Experiments: Screening and Ranking</div>
+          <div class="tl-body">Launched the first iteration of AI applicant ranking with a controlled user group. Initial conversion data showed a strong positive signal. Identified key friction points in the compliance flow and iterated rapidly.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">🏘</div>
+        <div class="tl-content">
+          <div class="tl-date">April 2024</div>
+          <div class="tl-title">AI Listing and Lease Generation</div>
+          <div class="tl-body">Launched AI-generated listings and lease documents. Listing creation time on task dropped from 45 minutes to 5 minutes. Listings created increased by 130% over baseline. The team ran parallel experiments on communication drafts.</div>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-dot">🏆</div>
+        <div class="tl-content">
+          <div class="tl-date">May 2024</div>
+          <div class="tl-title">Results and Recognition</div>
+          <div class="tl-body">Premium screening conversion reached 47% (from 19%). Screening revenue was up 50% YoY, with Q1 forecasts projecting 70% growth in the following year. The work was recognized with the AX100 Disruption Award and HousingWire Tech100.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<hr class="divider" />
+
+<!-- IMPACT -->
+<section class="section" id="impact">
+  <div class="container">
+    <p class="section-label">The Impact</p>
+    <h2 class="section-title">Better Experiences, Lower Costs, Real Revenue</h2>
+    <p class="section-body">These results were not theoretical improvements. Customers spent more because they trusted the product. That trust came from better UX powered by smart technology. The AI features were the proof point: innovation does not always start with tech. It starts with listening, learning, and earning trust through results.</p>
+
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="impact-num">+50%</div>
+        <div class="impact-label">Screening revenue growth YoY (2023 to 2024), with 70% projected for the following year</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">+147%</div>
+        <div class="impact-label">Premium screening conversion rate improvement (19% to 47%) over four months</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">-90%</div>
+        <div class="impact-label">Reduction in listing creation time on task (45 minutes to 5 minutes)</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">+130%</div>
+        <div class="impact-label">Increase in listings created after AI tools launched</div>
+      </div>
+    </div>
+
+    <div class="grid-2 mt-12">
+      <div class="card card-sm">
+        <div class="card-title">Trust as the Differentiator</div>
+        <div class="card-body">By embedding compliance guidance directly into the AI workflow rather than surfacing it as a legal disclaimer, the team removed the biggest psychological barrier to premium feature adoption. Customers who felt protected by the product trusted it enough to pay more for it.</div>
+      </div>
+      <div class="card card-sm">
+        <div class="card-title">Team Capability as the Foundation</div>
+        <div class="card-body">This project would not have been possible without the organizational transformation that preceded it. The culture of discovery, the modular design system, and the cross-functional ownership model allowed the team to move from insight to shipped product in under 90 days per feature.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<hr class="divider" />
+<script>
+  const tickColor = '#8888aa';
+  const gridColor = 'rgba(255,255,255,.06)';
+
+  // Conversion Journey Chart
+  new Chart(document.getElementById('conversionChart'), {
+    type: 'line',
+    data: {
+      labels: ['Jan 2024', 'Feb 2024', 'Mar 2024', 'Apr 2024', 'May 2024'],
+      datasets: [{
+        label: 'Premium Screening Conversion (%)',
+        data: [19, 25, 31, 40, 47],
+        borderColor: 'rgba(139,92,246,1)',
+        backgroundColor: 'rgba(139,92,246,.12)',
+        tension: 0.4, fill: true, pointRadius: 6,
+        pointBackgroundColor: 'rgba(139,92,246,1)',
+        borderWidth: 3,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#ededf8' } },
+        tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y + '%' } }
+      },
+      scales: {
+        y: {
+          beginAtZero: true, max: 55,
+          ticks: { color: tickColor, callback: v => v + '%' },
+          grid: { color: gridColor }
+        },
+        x: { ticks: { color: tickColor }, grid: { display: false } }
+      }
+    }
+  });
+
+  // Time on Task Chart
+  new Chart(document.getElementById('timeChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Before AI', 'After AI'],
+      datasets: [{
+        label: 'Minutes',
+        data: [45, 5],
+        backgroundColor: ['rgba(239,68,68,.6)', 'rgba(139,92,246,.7)'],
+        borderColor: ['rgba(239,68,68,1)', 'rgba(139,92,246,1)'],
+        borderWidth: 1, borderRadius: 10,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          beginAtZero: true, max: 55,
+          ticks: { color: tickColor, callback: v => v + 'm' },
+          grid: { color: gridColor }
+        },
+        x: { ticks: { color: tickColor }, grid: { display: false } }
+      }
+    }
+  });
+
+  // Revenue Chart
+  new Chart(document.getElementById('revenueChart'), {
+    type: 'bar',
+    data: {
+      labels: ['2022', '2023', '2024', '2025'],
+      datasets: [{
+        label: 'Revenue Index',
+        data: [60, 100, 150, 170],
+        backgroundColor: [
+          'rgba(139,92,246,.4)',
+          'rgba(139,92,246,.55)',
+          'rgba(139,92,246,.8)',
+          'rgba(6,182,212,.7)'
+        ],
+        borderColor: [
+          'rgba(139,92,246,.6)',
+          'rgba(139,92,246,.8)',
+          'rgba(139,92,246,1)',
+          'rgba(6,182,212,1)'
+        ],
+        borderWidth: 1, borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ' Index: ' + ctx.parsed.y } }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: { color: tickColor },
+          grid: { color: gridColor }
+        },
+        x: { ticks: { color: tickColor }, grid: { display: false } }
+      }
+    }
+  });
+
+  // Conversion Gauge
+  new Chart(document.getElementById('convGauge'), {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [47, 53],
+        backgroundColor: ['rgba(139,92,246,.9)', 'rgba(255,255,255,.06)'],
+        borderWidth: 0, cutout: '75%',
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } }
+    }
+  });
+
+  // Listings Chart
+  new Chart(document.getElementById('listingsChart'), {
+    type: 'line',
+    data: {
+      labels: ['Baseline', 'Month 1', 'Month 2', 'Month 3'],
+      datasets: [{
+        label: 'Listings Created (index)',
+        data: [100, 155, 195, 230],
+        borderColor: 'rgba(6,182,212,1)',
+        backgroundColor: 'rgba(6,182,212,.1)',
+        tension: 0.4, fill: true, pointRadius: 4,
+        pointBackgroundColor: 'rgba(6,182,212,1)',
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#ededf8' } } },
+      scales: {
+        y: {
+          beginAtZero: false, min: 80, max: 250,
+          ticks: { color: tickColor },
+          grid: { color: gridColor }
+        },
+        x: { ticks: { color: tickColor }, grid: { display: false } }
+      }
+    }
+  });
+</script>
+<!-- ═══════════════════════════════════ PORTFOLIO FOOTER NAV -->
+<div class="pnav-footer">
+  <div class="pnav-footer-inner">
+    <a href="../design-system/case-study-design-system.html" class="pnav-footer-prev">
+      <span class="pnav-footer-label">&#8592; Previous</span>
+      <span class="pnav-footer-title">Building an AI-Native Design System</span>
+    </a>
+    <a href="../index.html" class="pnav-footer-index">All Work</a>
+    <a href="../app-redesign/case-study-application-redesign.html" class="pnav-footer-next">
+      <span class="pnav-footer-label">Next &#8594;</span>
+      <span class="pnav-footer-title">Rental Application Redesign</span>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>
